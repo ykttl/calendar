@@ -1,8 +1,12 @@
 import React from 'react';
 import { format } from 'date-fns';
 class Inputs extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  data = [];
   state = {
-    date: format(new Date(), 'ddd MMM DD YYYY'),
+    date: '',
     period: { start: false, end: false },
     ovulation: { start: false, end: false },
     temperature: '',
@@ -13,10 +17,21 @@ class Inputs extends React.Component {
     note: ''
   };
   componentDidUpdate() {
-    console.log(this.state);
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    const kore = dataFromServer.find(item => item.date === this.props.dateID);
+    console.log(kore);
   }
+  componentDidMount() {
+    //this.setDate(this.props.dateID);
+  }
+  // setDate = dateID => {
+  //   this.setState({ date: dateID });
+  // };
   saveToServer = () => {
-    localStorage.setItem('data', JSON.stringify(this.state));
+    this.setState({ date: this.props.dateID }, () => {
+      this.data.push(this.state);
+      localStorage.setItem('data', JSON.stringify(this.data));
+    });
   };
   render() {
     return (

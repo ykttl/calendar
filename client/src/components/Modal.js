@@ -1,22 +1,29 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-import '../modal.css';
 import Inputs from './Inputs';
+import '../modal.css';
 
-const Modal = ({ handleClose, show, children, dateID }) => {
-  const showHideClassName = show ? 'modal display-block' : 'modal display-none';
-  console.log(dateID);
-  return (
-    <div className={showHideClassName}>
-      <section className="modal-main">
-        {children}
+class Modal extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-        <button onClick={handleClose}>close</button>
-        <p> {dateID}</p>
-        <Inputs />
-      </section>
-    </div>
-  );
-};
+  render() {
+    const showHideClassName = this.props.show
+      ? 'modal display-block'
+      : 'modal display-none';
+
+    return (
+      <div className={showHideClassName}>
+        <section className="modal-main">
+          {this.props.children}
+
+          <button onClick={this.props.handleClose}>close</button>
+          <p> {this.props.dateID}</p>
+          <Inputs dateID={this.props.dateID} />
+        </section>
+      </div>
+    );
+  }
+}
 
 export default Modal;

@@ -70,7 +70,7 @@ class Calendar extends React.Component {
         const cloneDay = day;
         const dateID = day.toString().slice(0, 15);
         let css = '';
-        if (dateID === dataFromServer.date) {
+        if (dataFromServer && dateID === dataFromServer.date) {
           css = 'pills';
         } else {
           css = '';
@@ -136,7 +136,7 @@ class Calendar extends React.Component {
           dateID={this.state.dateID}
           handleClose={this.hideModal}
         />
-        >{this.renderHeader()}
+        {this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
       </div>

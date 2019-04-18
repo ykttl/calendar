@@ -10,7 +10,7 @@
 .modal-main {
   position: fixed;
   background: white;
-  border: lightgreen solid;
+  border: pink solid;
   width: 50%;
   height: 600px;
   top: 50%;
