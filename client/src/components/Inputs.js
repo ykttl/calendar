@@ -19,10 +19,8 @@ class Inputs extends React.Component {
     localStorage.setItem('data', JSON.stringify(this.state));
   };
   render() {
-    console.log(this.state.date);
     return (
       <div>
-        <div> {this.state.date}</div>
         <div>
           Period:
           <button>START</button>

@@ -1,10 +1,18 @@
 import React from 'react';
 import dateFns from 'date-fns';
-import '../App.css';
+import Modal from './Modal';
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date(),
+    show: false,
+    dateID: ''
+  };
+
+  toggleModal = () => {
+    this.setState({
+      showModal: !this.state.showModal
+    });
   };
   renderHeader = () => {
     const dateFormat = 'MMMM YYYY';
@@ -42,6 +50,7 @@ class Calendar extends React.Component {
   };
   renderCells = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    console.log(dataFromServer);
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -59,19 +68,26 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat);
         const cloneDay = day;
-        const testday = day.toString().slice(0, 15);
+        const dateID = day.toString().slice(0, 15);
         let css = '';
-        if (testday === dataFromServer.date) {
+        if (dateID === dataFromServer.date) {
           css = 'pills';
         } else {
           css = '';
         }
-        console.log(day);
         days.push(
           <div
-            className={`col cell ${css}`}
-            key={day}
-            onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
+            className={`col cell ${
+              !dateFns.isSameMonth(day, monthStart)
+                ? 'disabled'
+                : dateFns.isSameDay(day, selectedDate)
+                ? 'selected'
+                : ''
+                ? dateID === dataFromServer.date
+                : 'pills'
+            }`}
+            key={dateID}
+            onClick={() => this.onDateClick(dateFns.parse(cloneDay), dateID)}
           >
             <span className="number">{formattedDate}</span>
             <span className="bg">{formattedDate}</span>
@@ -79,7 +95,6 @@ class Calendar extends React.Component {
         );
         day = dateFns.addDays(day, 1);
       }
-      console.log(days);
       rows.push(
         <div className="row" key={day}>
           {days}
@@ -89,7 +104,16 @@ class Calendar extends React.Component {
     }
     return <div className="body">{rows}</div>;
   };
-  onDateClick = day => {
+  showModal = dateID => {
+    this.setState({ show: true, dateID: dateID });
+  };
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
+  onDateClick = (day, dateID) => {
+    console.log(dateID);
+    this.showModal(dateID);
     this.setState({
       selectedDate: day
     });
@@ -107,7 +131,12 @@ class Calendar extends React.Component {
   render() {
     return (
       <div className="calendar">
-        {this.renderHeader()}
+        <Modal
+          show={this.state.show}
+          dateID={this.state.dateID}
+          handleClose={this.hideModal}
+        />
+        >{this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
       </div>

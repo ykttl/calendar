@@ -155,7 +155,7 @@ main {
 }
 
 .calendar .body .cell {
-  position: relative;
+  /* position: relative; */
   height: 5em;
   border-right: 1px solid var(--border-color);
   overflow: hidden;
@@ -164,10 +164,10 @@ main {
   transition: 0.25s ease-out;
 }
 
-.calendar .body .cell:hover {
+/* .calendar .body .cell:hover {
   background: var(--bg-color);
   transition: 0.5s ease-out;
-}
+} */
 
 .calendar .body .selected {
   border-left: 10px solid transparent;
@@ -188,7 +188,7 @@ main {
 }
 
 .calendar .body .cell .number {
-  position: absolute;
+  /* position: absolute; */
   font-size: 82.5%;
   line-height: 1;
   top: 0.75em;
@@ -227,5 +227,5 @@ main {
 }
 
 .pills {
-  background: red;
+  /* background: red; */
 }
