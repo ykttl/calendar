@@ -73,20 +73,60 @@ class Inputs extends React.Component {
   };
   render() {
     return (
-      <div>
+      <form>
         <div>
-          Period:
-          <button>START</button>
-          <button>END</button>
+          Period: start
+          <input
+            checked={this.state.period.start === 'on' ? 'checked' : false}
+            type="radio"
+            name="period"
+            onChange={e => {
+              this.setState({ period: { start: e.target.value } });
+            }}
+          />
+          end
+          <input
+            checked={this.state.period.end === 'on' ? 'checked' : false}
+            type="radio"
+            name="period"
+            onChange={e => {
+              this.setState({ period: { end: e.target.value } });
+            }}
+          />
         </div>
         <div>
-          ovulation:
-          <button>START</button>
-          <button>END</button>
+          ovulation: start
+          <input
+            checked={this.state.ovulation.start === 'on' ? 'checked' : false}
+            type="radio"
+            name="ovulation"
+            onChange={e => {
+              this.setState({
+                ovulation: { start: e.target.value }
+              });
+            }}
+          />
+          end
+          <input
+            checked={this.state.ovulation.end === 'on' ? 'checked' : false}
+            type="radio"
+            name="ovulation"
+            onChange={e => {
+              this.setState({
+                ovulation: { end: e.target.value }
+              });
+            }}
+          />
         </div>
         <div>
           Temperature:
-          <input type="text" />
+          <input
+            type="text"
+            onChange={e => {
+              this.setState({ temperature: e.target.value });
+            }}
+            value={this.state.temperature}
+          />
         </div>
         <div>
           any symptoms?
@@ -109,22 +149,42 @@ class Inputs extends React.Component {
         </div>
         <div>
           intercourse?
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            onClick={() => {
+              this.setState({ intercourse: !this.state.intercourse });
+            }}
+          />
         </div>
         <div>
           moods:
-          <input type="text" />
+          <input
+            type="text"
+            onChange={e => {
+              this.setState({ moods: e.target.value });
+            }}
+            value={this.state.moods}
+          />
         </div>
         <div>
           Note:
-          <input type="text" />
+          <input
+            type="text"
+            onChange={e => {
+              this.setState({ note: e.target.value });
+            }}
+            value={this.state.note}
+          />
         </div>
         <button style={{ color: 'red' }} onClick={this.saveToServer}>
           SAVE
         </button>
 
-        <p>{this.state.symptoms}</p>
-      </div>
+        <p>symptoms:{this.state.symptoms}</p>
+        <p>note:{this.state.note}</p>
+        <p>moods:{this.state.moods}</p>
+        <p>temperature:{this.state.temperature}</p>
+      </form>
     );
   }
 }
