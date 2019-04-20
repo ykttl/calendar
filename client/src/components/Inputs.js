@@ -16,17 +16,48 @@ class Inputs extends React.Component {
     intercourse: false,
     note: ''
   };
-  componentDidUpdate() {
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    const kore = dataFromServer.find(item => item.date === this.props.dateID);
-    console.log(kore);
+  componentDidUpdate(prevPro) {
+    if (prevPro.dateID === this.props.dateID) return;
+    this.setState({
+      date: '',
+      period: { start: false, end: false },
+      ovulation: { start: false, end: false },
+      temperature: '',
+      moods: [],
+      symptoms: [],
+      medicine: false,
+      intercourse: false,
+      note: ''
+    });
+    let dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) {
+      return [];
+    }
+
+    this.data = [...dataFromServer];
+
+    const theData = dataFromServer.find(
+      item => item.date === this.props.dateID
+    );
+    if (theData) {
+      this.setState({
+        date: this.props.dataID,
+        period: { start: theData.period.start, end: theData.period.end },
+        ovulation: {
+          start: theData.ovulation.start,
+          end: theData.ovulation.end
+        },
+        temperature: theData.temperature,
+        moods: theData.moods,
+        symptoms: theData.symptoms,
+        medicine: theData.medicine,
+        intercourse: theData.intercourse,
+        note: theData.note
+      });
+    }
+    console.log(this.state.symptoms);
   }
-  componentDidMount() {
-    //this.setDate(this.props.dateID);
-  }
-  // setDate = dateID => {
-  //   this.setState({ date: dateID });
-  // };
+
   saveToServer = () => {
     this.setState({ date: this.props.dateID }, () => {
       this.data.push(this.state);
@@ -52,7 +83,12 @@ class Inputs extends React.Component {
         </div>
         <div>
           any symptoms?
-          <input type="text" />
+          <input
+            type="text"
+            onChange={e => {
+              this.setState({ symptoms: e.target.value });
+            }}
+          />
         </div>
         <div>
           Took any medicine?
@@ -78,6 +114,8 @@ class Inputs extends React.Component {
         <button style={{ color: 'red' }} onClick={this.saveToServer}>
           SAVE
         </button>
+
+        <p>{this.state.symptoms}</p>
       </div>
     );
   }
