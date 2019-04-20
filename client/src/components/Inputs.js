@@ -60,6 +60,13 @@ class Inputs extends React.Component {
 
   saveToServer = () => {
     this.setState({ date: this.props.dateID }, () => {
+      const theData = this.data.findIndex(
+        item => item.date === this.props.dateID
+      );
+      if (theData != -1) {
+        this.data.splice(theData, 1);
+      }
+
       this.data.push(this.state);
       localStorage.setItem('data', JSON.stringify(this.data));
     });
@@ -88,6 +95,7 @@ class Inputs extends React.Component {
             onChange={e => {
               this.setState({ symptoms: e.target.value });
             }}
+            value={this.state.symptoms}
           />
         </div>
         <div>
