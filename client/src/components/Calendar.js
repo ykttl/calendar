@@ -62,20 +62,40 @@ class Calendar extends React.Component {
     let days = [];
     let day = startDate;
     let formattedDate = '';
-    console.log(dataFromServer);
+
+    let count;
+    console.log(day);
+    console.log(endDate);
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
+        console.log(i);
+        console.log(day);
         formattedDate = dateFns.format(day, dateFormat);
         const cloneDay = day;
         const dateID = day.toString().slice(0, 15);
         let css = [];
 
-        if (dataFromServer[i].medicine) {
-          css.push('pills');
-        } else {
-          css.push('aaa');
-        }
+        const a = dataFromServer.find(obj => {
+          if (obj.date === dateID && obj.medicine) {
+            css.push('pills');
+          }
+        });
+        console.log(a);
+        count = formattedDate;
+
+        // if (count != 31) {
+        //   console.log('true');
+        // } else {
+        //   count = 0;
+        // }
+        // // console.log(dataFromServer[].medicine, dataFromServer[]);
+
+        // if (dataFromServer[count] && dataFromServer[count].medicine) {
+        //   css.push('pills');
+        // } else {
+        //   css.push('');
+        // }
 
         if (!dateFns.isSameMonth(day, monthStart)) {
           css.push('disabled ');
@@ -91,6 +111,7 @@ class Calendar extends React.Component {
           <div
             className={`col cell ${css}`}
             key={dateID}
+            id={dateID}
             onClick={() => this.onDateClick(dateFns.parse(cloneDay), dateID)}
           >
             <span className="number">{formattedDate}</span>
@@ -106,6 +127,7 @@ class Calendar extends React.Component {
       );
       days = [];
     }
+
     return <div className="body">{rows}</div>;
   };
   showModal = dateID => {

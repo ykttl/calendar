@@ -213,6 +213,6 @@ main {
   width: calc(100% / 7);
 }
 
-/* .pills {
+.pills {
   background: red;
-} */
+}

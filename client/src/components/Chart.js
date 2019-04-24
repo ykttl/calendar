@@ -4,6 +4,7 @@ import React from 'react';
 
 class Chart extends React.Component {
   test;
+  label;
   componentDidUpdate(prevProps, prevState) {
     this.getData();
   }
@@ -16,44 +17,29 @@ class Chart extends React.Component {
       return [];
     }
     //let arr = [];
-    this.test = dataFromServer.map(item => parseFloat(item.temperature));
+    this.test = dataFromServer.map(item => {
+      if (item.temperature === '') {
+        return null;
+      } else {
+        return parseFloat(item.temperature);
+      }
+    });
+
+    console.log(this.test);
     return this.test;
   };
+  getLabel = () => {
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) {
+      return [];
+    }
+    this.label = dataFromServer.map(item => parseFloat(item.date.slice(8, 10)));
+    console.log(this.label);
+    return this.label;
+  };
   render() {
-    console.log(this.test);
     const data = {
-      labels: [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30
-      ], // should be ['aaa','aaa']
+      labels: this.getLabel(), // should be ['aaa','aaa']
       datasets: [
         {
           label: 'Temperature',
@@ -67,7 +53,8 @@ class Chart extends React.Component {
           ],
           borderColor: 'rgb(255, 99, 132)',
           fill: false,
-          data: this.getData()
+          data: this.getData(),
+          spanGaps: true
         }
       ]
     };

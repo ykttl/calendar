@@ -59,7 +59,14 @@ class Inputs extends React.Component {
   }
 
   saveToServer = () => {
-    console.log('save');
+    // let css = [];
+    // const id = this.props.dateID;
+    // if (this.state.medicine) {
+    //   css.push('pills');
+    // }
+    // document.getElementById(`${id}`).className += css;
+    // console.log(document.getElementById(`${id}`).className);
+
     this.setState({ date: this.props.dateID }, () => {
       const theData = this.data.findIndex(
         item => item.date === this.props.dateID
@@ -83,7 +90,6 @@ class Inputs extends React.Component {
 
       this.data.sort(compare);
 
-      console.log(this.data);
       localStorage.setItem('data', JSON.stringify(this.data));
     });
   };
