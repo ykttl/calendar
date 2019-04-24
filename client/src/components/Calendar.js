@@ -35,7 +35,7 @@ class Calendar extends React.Component {
   };
   renderDays = () => {
     const dateFormat = 'dddd';
-    const days = [];
+    let days = [];
 
     let startDate = dateFns.startOfWeek(this.state.currentMonth);
 
@@ -50,7 +50,6 @@ class Calendar extends React.Component {
   };
   renderCells = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    console.log(dataFromServer);
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -63,29 +62,34 @@ class Calendar extends React.Component {
     let days = [];
     let day = startDate;
     let formattedDate = '';
+    console.log(dataFromServer);
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat);
         const cloneDay = day;
         const dateID = day.toString().slice(0, 15);
-        let css = '';
-        if (dataFromServer && dateID === dataFromServer.date) {
-          css = 'pills';
+        let css = [];
+
+        if (dataFromServer[i].medicine) {
+          css.push('pills');
         } else {
-          css = '';
+          css.push('aaa');
         }
+
+        if (!dateFns.isSameMonth(day, monthStart)) {
+          css.push('disabled ');
+        } else if (dateFns.isSameDay(day, selectedDate)) {
+          css.push('selected ');
+        } else {
+          css.push('');
+        }
+
+        css = css.join(' ');
+
         days.push(
           <div
-            className={`col cell ${
-              !dateFns.isSameMonth(day, monthStart)
-                ? 'disabled'
-                : dateFns.isSameDay(day, selectedDate)
-                ? 'selected'
-                : ''
-                ? dateID === dataFromServer.date
-                : 'pills'
-            }`}
+            className={`col cell ${css}`}
             key={dateID}
             onClick={() => this.onDateClick(dateFns.parse(cloneDay), dateID)}
           >
@@ -119,11 +123,13 @@ class Calendar extends React.Component {
     });
   };
   nextMonth = () => {
+    console.log('next');
     this.setState({
       currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
     });
   };
   prevMonth = () => {
+    console.log('prev');
     this.setState({
       currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
     });

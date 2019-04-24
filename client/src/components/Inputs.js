@@ -55,65 +55,81 @@ class Inputs extends React.Component {
         note: theData.note
       });
     }
-    console.log(this.state.symptoms);
+    console.log(dataFromServer);
   }
 
   saveToServer = () => {
+    console.log('save');
     this.setState({ date: this.props.dateID }, () => {
       const theData = this.data.findIndex(
         item => item.date === this.props.dateID
       );
+      console.log(theData);
       if (theData != -1) {
         this.data.splice(theData, 1);
       }
-
       this.data.push(this.state);
+      function compare(a, b) {
+        a = a.date.slice(8, 10);
+        b = b.date.slice(8, 10);
+        if (a < b) {
+          return -1;
+        }
+        if (a > b) {
+          return 1;
+        }
+        return 0;
+      }
+
+      this.data.sort(compare);
+
+      console.log(this.data);
       localStorage.setItem('data', JSON.stringify(this.data));
     });
   };
   render() {
     return (
-      <form>
+      <div>
         <div>
           Period: start
           <input
-            checked={this.state.period.start === 'on' ? 'checked' : false}
+            checked={this.state.period.start === true ? 'checked' : false}
             type="radio"
             name="period"
             onChange={e => {
-              this.setState({ period: { start: e.target.value } });
+              this.setState({ period: { start: !this.state.period.start } });
             }}
           />
           end
           <input
-            checked={this.state.period.end === 'on' ? 'checked' : false}
+            checked={this.state.period.end === true ? 'checked' : false}
             type="radio"
             name="period"
             onChange={e => {
-              this.setState({ period: { end: e.target.value } });
+              this.setState({ period: { end: !this.state.period.end } });
             }}
           />
         </div>
         <div>
           ovulation: start
           <input
-            checked={this.state.ovulation.start === 'on' ? 'checked' : false}
+            checked={this.state.ovulation.start === true ? 'checked' : false}
             type="radio"
             name="ovulation"
             onChange={e => {
               this.setState({
-                ovulation: { start: e.target.value }
+                ovulation: { start: !this.state.ovulation.start }
               });
             }}
           />
           end
           <input
-            checked={this.state.ovulation.end === 'on' ? 'checked' : false}
+            checked={this.state.ovulation.end === true ? 'checked' : false}
             type="radio"
             name="ovulation"
             onChange={e => {
               this.setState({
-                ovulation: { end: e.target.value }
+                ovulation: { end: !this.state.ovulation.end }
               });
             }}
           />
@@ -142,7 +158,8 @@ class Inputs extends React.Component {
           Took any medicine?
           <input
             type="checkbox"
-            onClick={() => {
+            checked={this.state.medicine === true ? 'checked' : false}
+            onChange={() => {
               this.setState({ medicine: !this.state.medicine });
             }}
           />
@@ -184,7 +201,7 @@ class Inputs extends React.Component {
         <p>note:{this.state.note}</p>
         <p>moods:{this.state.moods}</p>
         <p>temperature:{this.state.temperature}</p>
-      </form>
+      </div>
     );
   }
 }
