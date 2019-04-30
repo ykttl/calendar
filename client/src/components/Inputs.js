@@ -1,30 +1,39 @@
 import React from 'react';
-import { format } from 'date-fns';
+
 class Inputs extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   data = [];
   state = {
     date: '',
+    dateIDms: '',
+    dateNumID: '',
+    month: '',
+    day: '',
+    year: '',
     period: { start: false, end: false },
     ovulation: { start: false, end: false },
     temperature: '',
     moods: [],
-    symptoms: [],
+    symptoms: '',
+    suggestions: [],
     medicine: false,
     intercourse: false,
     note: ''
   };
-  componentDidUpdate(prevPro) {
-    if (prevPro.dateID === this.props.dateID) return;
+  componentDidUpdate(prevPro, prevState) {
+    if (prevPro.dateID === this.props.dateID && prevState !== this.state)
+      return;
     this.setState({
       date: '',
+      dateIDms: '',
+      dateNumID: '',
+      month: '',
+      day: '',
+      year: '',
       period: { start: false, end: false },
       ovulation: { start: false, end: false },
       temperature: '',
       moods: [],
-      symptoms: [],
+      symptoms: '',
       medicine: false,
       intercourse: false,
       note: ''
@@ -42,6 +51,11 @@ class Inputs extends React.Component {
     if (theData) {
       this.setState({
         date: this.props.dataID,
+        dateIDms: this.props.dateIDms,
+        dateNumID: this.props.dateIDnum,
+        month: this.props.dateID.slice(4, 7),
+        day: this.props.dateID.slice(8, 10),
+        year: this.props.dateID.slice(11, 15),
         period: { start: theData.period.start, end: theData.period.end },
         ovulation: {
           start: theData.ovulation.start,
@@ -59,45 +73,51 @@ class Inputs extends React.Component {
   }
 
   saveToServer = () => {
-    // let css = [];
-    // const id = this.props.dateID;
-    // if (this.state.medicine) {
-    //   css.push('pills');
-    // }
-    // document.getElementById(`${id}`).className += css;
-    // console.log(document.getElementById(`${id}`).className);
+    this.setState(
+      {
+        date: this.props.dateID,
+        dateIDms: this.props.dateIDms,
+        dateNumID: this.props.dateIDnum,
+        month: this.props.dateID.slice(4, 7),
+        day: this.props.dateID.slice(8, 10),
+        year: this.props.dateID.slice(11, 15)
+      },
+      () => {
+        const theData = this.data.findIndex(
+          item => item.date === this.props.dateID
+        );
 
-    this.setState({ date: this.props.dateID }, () => {
-      const theData = this.data.findIndex(
-        item => item.date === this.props.dateID
-      );
-      console.log(theData);
-      if (theData != -1) {
-        this.data.splice(theData, 1);
-      }
-      this.data.push(this.state);
-      function compare(a, b) {
-        a = a.date.slice(8, 10);
-        b = b.date.slice(8, 10);
-        if (a < b) {
-          return -1;
+        if (theData !== -1) {
+          this.data.splice(theData, 1);
         }
-        if (a > b) {
-          return 1;
+        this.data.push(this.state);
+
+        function compare(a, b) {
+          a = parseInt(a.dateIDms);
+          b = parseInt(b.dateIDms);
+          if (a < b) {
+            return -1;
+          }
+          if (a > b) {
+            return 1;
+          }
+          return 0;
         }
-        return 0;
+
+        this.data.sort(compare);
+        // this.data.sort();
+        console.log(this.data);
+
+        localStorage.setItem('data', JSON.stringify(this.data));
       }
-
-      this.data.sort(compare);
-
-      localStorage.setItem('data', JSON.stringify(this.data));
-    });
+    );
   };
+
   render() {
     return (
       <div>
         <div>
-          Period: start
+          Period:start
           <input
             checked={this.state.period.start === true ? 'checked' : false}
             type="radio"
@@ -117,7 +137,7 @@ class Inputs extends React.Component {
           />
         </div>
         <div>
-          ovulation: start
+          ovulation:start
           <input
             checked={this.state.ovulation.start === true ? 'checked' : false}
             type="radio"
@@ -140,6 +160,7 @@ class Inputs extends React.Component {
             }}
           />
         </div>
+
         <div>
           Temperature:
           <input
@@ -152,14 +173,19 @@ class Inputs extends React.Component {
         </div>
         <div>
           any symptoms?
-          <input
-            type="text"
+          <select
             onChange={e => {
               this.setState({ symptoms: e.target.value });
             }}
             value={this.state.symptoms}
-          />
+          >
+            <option value="">-</option>
+            <option value="headache">headache</option>
+            <option value="crump">crump</option>
+            <option value="heavy">heavy</option>
+          </select>
         </div>
+
         <div>
           Took any medicine?
           <input
@@ -174,7 +200,8 @@ class Inputs extends React.Component {
           intercourse?
           <input
             type="checkbox"
-            onClick={() => {
+            checked={this.state.intercourse === true ? 'checked' : false}
+            onChange={() => {
               this.setState({ intercourse: !this.state.intercourse });
             }}
           />
@@ -213,3 +240,11 @@ class Inputs extends React.Component {
 }
 
 export default Inputs;
+
+// <input
+// type="text"
+// onChange={e => {
+//   this.setState({ symptoms: e.target.value });
+// }}
+// value={this.state.symptoms}
+// />

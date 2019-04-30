@@ -1,19 +1,20 @@
+// this calendar is made by referring to https://github.com/moodydev/react-calendar
+// https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
+
 import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
+
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
     selectedDate: new Date(),
-    show: false,
-    dateID: ''
+    showModal: false,
+    dateID: '',
+    dateIDms: '',
+    dateIDnum: ''
   };
 
-  toggleModal = () => {
-    this.setState({
-      showModal: !this.state.showModal
-    });
-  };
   renderHeader = () => {
     const dateFormat = 'MMMM YYYY';
 
@@ -33,11 +34,11 @@ class Calendar extends React.Component {
       </div>
     );
   };
+
   renderDays = () => {
     const dateFormat = 'dddd';
-    let days = [];
-
     let startDate = dateFns.startOfWeek(this.state.currentMonth);
+    let days = [];
 
     for (let i = 0; i < 7; i++) {
       days.push(
@@ -48,6 +49,7 @@ class Calendar extends React.Component {
     }
     return <div className="days row">{days}</div>;
   };
+
   renderCells = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     const { currentMonth, selectedDate } = this.state;
@@ -55,47 +57,73 @@ class Calendar extends React.Component {
     const monthEnd = dateFns.endOfMonth(monthStart);
     const startDate = dateFns.startOfWeek(monthStart);
     const endDate = dateFns.endOfWeek(monthEnd);
-
     const dateFormat = 'D';
     const rows = [];
-
     let days = [];
     let day = startDate;
     let formattedDate = '';
-
-    let count;
-    console.log(day);
-    console.log(endDate);
+    let intercourseIcon;
+    let medicineIcon;
+    let symptomsIcon;
+    let noteIcon;
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        console.log(i);
-        console.log(day);
         formattedDate = dateFns.format(day, dateFormat);
+
         const cloneDay = day;
         const dateID = day.toString().slice(0, 15);
+        const dateIDms = dateFns.format(day, 'x');
+        const dateIDnum = dateFns.format(day, 'YYYYMD');
+        console.log(dateIDnum);
+
         let css = [];
 
-        const a = dataFromServer.find(obj => {
-          if (obj.date === dateID && obj.medicine) {
-            css.push('pills');
-          }
-        });
-        console.log(a);
-        count = formattedDate;
+        // ============== adding CSS ==================================
+        if (dataFromServer) {
+          dataFromServer.find(obj => {
+            if (obj.date === dateID) {
+              // intercourseIcon = 'aaaa';
+              // console.log(intercourseIcon);
 
-        // if (count != 31) {
-        //   console.log('true');
-        // } else {
-        //   count = 0;
-        // }
-        // // console.log(dataFromServer[].medicine, dataFromServer[]);
+              if (obj.medicine) {
+                css.push('medicine');
+                medicineIcon = (
+                  <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
+                );
+              } else {
+                medicineIcon = '';
+              }
 
-        // if (dataFromServer[count] && dataFromServer[count].medicine) {
-        //   css.push('pills');
-        // } else {
-        //   css.push('');
-        // }
+              if (obj.intercourse) {
+                css.push('intercourse');
+                intercourseIcon = (
+                  <img src="https://img.icons8.com/office/25/000000/hearts.png" />
+                );
+              } else {
+                intercourseIcon = '';
+              }
+
+              if (obj.symptoms !== '') {
+                symptomsIcon = (
+                  <img src="https://img.icons8.com/color/25/000000/question.png" />
+                );
+              } else {
+                symptomsIcon = '';
+              }
+
+              if (obj.note !== '') {
+                // css.push('note');
+
+                noteIcon = (
+                  <img src="https://img.icons8.com/ios/25/000000/note.png" />
+                );
+              } else {
+                noteIcon = '';
+              }
+            }
+          });
+        }
 
         if (!dateFns.isSameMonth(day, monthStart)) {
           css.push('disabled ');
@@ -107,17 +135,35 @@ class Calendar extends React.Component {
 
         css = css.join(' ');
 
+        // ============== /adding CSS ==================================
+
         days.push(
           <div
             className={`col cell ${css}`}
             key={dateID}
             id={dateID}
-            onClick={() => this.onDateClick(dateFns.parse(cloneDay), dateID)}
+            onClick={() =>
+              this.onDateClick(
+                dateFns.parse(cloneDay),
+                dateID,
+                dateIDms,
+                dateIDnum
+              )
+            }
           >
             <span className="number">{formattedDate}</span>
             <span className="bg">{formattedDate}</span>
+            <p />
+            {intercourseIcon}
+            {medicineIcon}
+            {symptomsIcon}
+            {noteIcon}
           </div>
         );
+        intercourseIcon = '';
+        medicineIcon = '';
+        symptomsIcon = '';
+        noteIcon = '';
         day = dateFns.addDays(day, 1);
       }
       rows.push(
@@ -130,38 +176,48 @@ class Calendar extends React.Component {
 
     return <div className="body">{rows}</div>;
   };
-  showModal = dateID => {
-    this.setState({ show: true, dateID: dateID });
-  };
 
-  hideModal = () => {
-    this.setState({ show: false });
-  };
-  onDateClick = (day, dateID) => {
-    console.log(dateID);
-    this.showModal(dateID);
+  onDateClick = (day, dateID, dateIDms) => {
+    this.showModal(dateID, dateIDms);
     this.setState({
       selectedDate: day
     });
   };
   nextMonth = () => {
-    console.log('next');
     this.setState({
       currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
     });
   };
   prevMonth = () => {
-    console.log('prev');
     this.setState({
       currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
     });
   };
+
+  // ============== modal ===========================
+
+  showModal = (dateID, dateIDms, dateIDnum) => {
+    this.setState({
+      showModal: true,
+      dateID: dateID,
+      dateIDms: dateIDms,
+      dateIDnum: dateIDnum
+    });
+  };
+
+  hideModal = () => {
+    this.setState({ showModal: false });
+  };
+
+  // ============== render ===========================
   render() {
     return (
       <div className="calendar">
         <Modal
-          show={this.state.show}
+          showModal={this.state.showModal}
           dateID={this.state.dateID}
+          dateIDms={this.state.dateIDms}
+          dateIDnum={this.state.dateIDnum}
           handleClose={this.hideModal}
         />
         {this.renderHeader()}

@@ -3,6 +3,9 @@ import { Line } from 'react-chartjs-2';
 import React from 'react';
 
 class Chart extends React.Component {
+  state = {
+    range: 1
+  };
   test;
   label;
   componentDidUpdate(prevProps, prevState) {
@@ -33,24 +36,20 @@ class Chart extends React.Component {
     if (!dataFromServer) {
       return [];
     }
-    this.label = dataFromServer.map(item => parseFloat(item.date.slice(8, 10)));
-    console.log(this.label);
+
+    this.label = dataFromServer.map(
+      item => item.date.slice(4, 7) + parseFloat(item.date.slice(8, 10))
+    );
+
     return this.label;
   };
   render() {
     const data = {
-      labels: this.getLabel(), // should be ['aaa','aaa']
+      labels: this.getLabel(),
       datasets: [
         {
           label: 'Temperature',
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
+          backgroundColor: ['rgba(255, 99, 132, 0.2)'],
           borderColor: 'rgb(255, 99, 132)',
           fill: false,
           data: this.getData(),
@@ -59,21 +58,29 @@ class Chart extends React.Component {
       ]
     };
     return (
-      <div
-        style={{
-          width: '80%',
-          margin: '0 auto',
-          paddingTop: '100px'
-        }}
-      >
-        <Line
-          data={data}
-          width={400}
-          height={400}
-          options={{
-            maintainAspectRatio: false
+      <div>
+        <select>
+          <option value={1}>1</option>
+          <option value={3}>3</option>
+        </select>
+        <button>next</button>
+        <button>prev</button>
+        <div
+          style={{
+            width: '80%',
+            margin: '0 auto',
+            paddingTop: '100px'
           }}
-        />
+        >
+          <Line
+            data={data}
+            width={400}
+            height={400}
+            options={{
+              maintainAspectRatio: false
+            }}
+          />
+        </div>
       </div>
     );
   }

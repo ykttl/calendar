@@ -8,9 +8,12 @@
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-chartjs-2": "^2.7.6",
+    "react-dnd": "^7.4.5",
+    "react-dnd-html5-backend": "^7.4.4",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-tag-input": "^6.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

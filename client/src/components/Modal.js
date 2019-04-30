@@ -4,12 +4,12 @@ import '../App.css';
 import '../modal.css';
 
 class Modal extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
-    const showHideClassName = this.props.show
+    const showHideClassName = this.props.showModal
       ? 'modal display-block'
       : 'modal display-none';
 
@@ -20,7 +20,11 @@ class Modal extends React.Component {
 
           <button onClick={this.props.handleClose}>close</button>
           <p> {this.props.dateID}</p>
-          <Inputs dateID={this.props.dateID} />
+          <Inputs
+            dateID={this.props.dateID}
+            dateIDms={this.props.dateIDms}
+            dateIDnum={this.props.dateIDnum}
+          />
         </section>
       </div>
     );
