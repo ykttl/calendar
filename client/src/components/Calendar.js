@@ -86,6 +86,13 @@ class Calendar extends React.Component {
               // intercourseIcon = 'aaaa';
               // console.log(intercourseIcon);
 
+              if (obj.period.start) {
+                css.push('period-start');
+              }
+              if (obj.period.end) {
+                css.push('period-end');
+              }
+
               if (obj.medicine) {
                 css.push('medicine');
                 medicineIcon = (

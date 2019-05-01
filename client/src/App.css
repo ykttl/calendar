@@ -217,5 +217,10 @@ main {
   background: paleturquoise;
 }
 .intercourse {
-  background: pink;
+}
+.period-start {
+  background: red;
+}
+.period-end {
+  background: blue;
 }
