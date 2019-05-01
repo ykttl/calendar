@@ -4,17 +4,14 @@ import dateFns from 'date-fns';
 
 class Home extends React.Component {
   state = { day: '' };
+  arr = [];
   sinceHowManyDay = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) return '';
-
     let today = new Date();
     today = today.toString().slice(0, 15);
-    // console.log(today);
-    // let dayOfToday = today.slice();
     today = dateFns.format(today, 'x');
 
-    console.log(dataFromServer);
     const index = dataFromServer.findIndex(obj => obj.dateIDms >= today);
     for (let i = index; i > 0; i--) {
       if (dataFromServer[i].period.start) {
@@ -25,14 +22,44 @@ class Home extends React.Component {
         return a;
       }
     }
-    console.log(index);
-    console.log(today);
-    // while (dataFromServer[i].dateIDms <= today) {}
+  };
+  showList = () => {
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) return '';
+
+    // const arr = [];
+    // const arr2 = [];
+
+    // dataFromServer.map(obj => {
+    //   if (obj.period.start) {
+    //     arr.push(obj);
+    //   }
+    //   if (obj.period.end) {
+    //     arr.push(obj);
+    //   }
+    //   console.log(arr);
+    // });
+
+    // for (let i = 0; i < arr.length; i += 2) {
+    //   console.log(i);
+    //   console.log(arr[i]);
+    //   arr2.push([arr[i], arr[i + 1]]);
+    // }
+    // console.log('arr2', arr2);
+
+    // return arr2.map(item => {
+    //   return (
+    //     <div>
+    //       {item[0].month}-{item[0].day} 〜 {item[1].month}-{item[1].day}
+    //     </div>
+    //   );
+    // });
   };
   render() {
     return (
       <div>
         <p>{this.sinceHowManyDay()}...DAYS SINCE LAST PERIOD</p>
+        {this.showList()}
       </div>
     );
   }

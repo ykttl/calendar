@@ -1,5 +1,9 @@
 import React from 'react';
 
+let message = {
+  periodEnd: null
+};
+
 class Inputs extends React.Component {
   data = [];
   state = {
@@ -17,7 +21,8 @@ class Inputs extends React.Component {
     suggestions: [],
     medicine: false,
     intercourse: false,
-    note: ''
+    note: '',
+    err: ''
   };
   componentDidUpdate(prevPro, prevState) {
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
@@ -36,7 +41,8 @@ class Inputs extends React.Component {
       symptoms: '',
       medicine: false,
       intercourse: false,
-      note: ''
+      note: '',
+      err: ''
     });
     let dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) {
@@ -112,28 +118,128 @@ class Inputs extends React.Component {
       }
     );
   };
+  componentDidMount() {
+    this.handlePeriodStart();
+  }
+  handlePeriodStart = e => {
+    this.setState({ period: { start: !this.state.period.start } });
 
+    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
+
+    // const index = dataFromServer.findIndex(
+    //   obj => obj.dateIDms >= this.props.dateIDms
+    // );
+
+    // if (index === -1 && dataFromServer.length === 1) {
+    //   this.setState({ period: { start: !this.state.period.start } });
+    //   return;
+    // } else {
+    //   this.setState({
+    //     err: 'input ending date first!!!!',
+    //     period: { start: false }
+    //   });
+    // }
+
+    // if (index === -1) {
+    //   for (let i = dataFromServer.length - 1; i > 0; i--) {
+    //     if (dataFromServer[i].period && !dataFromServer[i].period.end) {
+    //       this.setState({
+    //         err: 'input ending date first!!!!',
+    //         period: { start: false }
+    //       });
+    //       return;
+    //     } else {
+    //       this.setState({ period: { start: !this.state.period.start } });
+    //       return;
+    //     }
+    //   }
+    // }
+  };
+  handlePeriodEnd = e => {
+    this.setState({ period: { end: !this.state.period.end } });
+    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
+
+    // const index = dataFromServer.findIndex(
+    //   obj => obj.dateIDms >= this.props.dateIDms
+    // );
+
+    // if (
+    //   index === -1 &&
+    //   dataFromServer.length === 1 &&
+    //   dataFromServer[0].period.start
+    // ) {
+    //   this.setState({ period: { end: !this.state.period.end } });
+    //   return;
+    // } else {
+    //   this.setState({
+    //     err: 'input starting date first!!!!',
+    //     period: { end: false }
+    //   });
+    // }
+
+    // if (index === -1) {
+    //   for (let i = dataFromServer.length - 1; i > 0; i--) {
+    //     if (dataFromServer[i].period && !dataFromServer[i].period.start) {
+    //       this.setState({
+    //         err: 'input starting date first!!!!',
+    //         period: { end: false }
+    //       });
+    //       return;
+    //     } else {
+    //       this.setState({ period: { end: !this.state.period.end } });
+    //       return;
+    //     }
+    //   }
+    // }
+    // if (index === 0) {
+    //   console.log('DAME!! index 0');
+    //   this.setState({
+    //     err: 'input starting date first!!!!',
+    //     period: { end: false }
+    //   });
+    //   return;
+    // }
+    // else {
+    //   console.log('ok index 0 ');
+    //   this.setState({ period: { end: !this.state.period.end } });
+    // }
+
+    // const index2 = dataFromServer.findIndex(
+    //   obj => obj.dateIDms >= this.props.dateIDms
+    // );
+    // for (let i = index2; i > 0; i--) {
+    //   if (dataFromServer[i].period && !dataFromServer[i].period.start) {
+    //     console.log('dame index');
+    //     this.setState({
+    //       err: 'input starting date first!!!!',
+    //       period: { end: false }
+    //     });
+    //     return;
+    //   } else {
+    //     console.log('ok index');
+    //     this.setState({ period: { end: !this.state.period.end } });
+    //   }
+    //   return;
+    // }
+  };
   render() {
     return (
       <div>
         <div>
+          <p>{this.state.err !== '' && this.state.err}</p>
           Period:start
           <input
             checked={this.state.period.start === true ? 'checked' : false}
             type="radio"
             name="period"
-            onChange={e => {
-              this.setState({ period: { start: !this.state.period.start } });
-            }}
+            onChange={this.handlePeriodStart}
           />
           end
           <input
             checked={this.state.period.end === true ? 'checked' : false}
             type="radio"
             name="period"
-            onChange={e => {
-              this.setState({ period: { end: !this.state.period.end } });
-            }}
+            onChange={this.handlePeriodEnd}
           />
         </div>
         <div>
