@@ -5,6 +5,10 @@ import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
 
+var gaga;
+var opa = false;
+var end = false;
+
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
@@ -52,6 +56,7 @@ class Calendar extends React.Component {
 
   renderCells = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    console.log('server', dataFromServer);
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -66,6 +71,7 @@ class Calendar extends React.Component {
     let medicineIcon;
     let symptomsIcon;
     let noteIcon;
+    let periodToggle = false;
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
@@ -75,21 +81,26 @@ class Calendar extends React.Component {
         const dateID = day.toString().slice(0, 15);
         const dateIDms = dateFns.format(day, 'x');
         const dateIDnum = dateFns.format(day, 'YYYYMD');
-        console.log(dateIDnum);
 
         let css = [];
 
         // ============== adding CSS ==================================
         if (dataFromServer) {
           dataFromServer.find(obj => {
+            console.log(dataFromServer, 'aaa');
             if (obj.date === dateID) {
               // intercourseIcon = 'aaaa';
               // console.log(intercourseIcon);
 
               if (obj.period.start) {
+                gaga = true;
                 css.push('period-start');
               }
+
               if (obj.period.end) {
+                gaga = false;
+                // end = true;
+
                 css.push('period-end');
               }
 
@@ -133,12 +144,43 @@ class Calendar extends React.Component {
         }
 
         if (!dateFns.isSameMonth(day, monthStart)) {
-          css.push('disabled ');
+          css.push('disabled');
         } else if (dateFns.isSameDay(day, selectedDate)) {
-          css.push('selected ');
+          css.push('selected');
         } else {
           css.push('');
         }
+
+        // if (gaga === true) {
+        //   css.push('gaga');
+        // }
+
+        let today = new Date();
+        today = today.toString().slice(0, 15);
+        today = dateFns.format(today, 'x');
+
+        // console.log(day, gaga, end, dateIDms >= today);
+
+        if (gaga && dateIDms <= today && dateIDms <= dateIDms + 86400000 * 5) {
+          console.log(day);
+          css.push('gaga');
+        }
+        if (gaga && end) {
+          console.log('kokokokoko', day);
+          css.push('gaga');
+        }
+        // console.log(css);
+        // console.log(css.indexOf('disabled'));
+        // console.log(css.indexOf('gaga'));
+
+        // if (css.indexOf('disabled') !== -1 ) {
+        //   console.log(day, 'oooo');
+        //   css.push('opa');
+        // }
+        // if (opa) {
+        //   css.push('opa');
+        //   opa = false;
+        // }
 
         css = css.join(' ');
 
@@ -180,7 +222,7 @@ class Calendar extends React.Component {
       );
       days = [];
     }
-
+    // end = false;
     return <div className="body">{rows}</div>;
   };
 
@@ -220,13 +262,16 @@ class Calendar extends React.Component {
   render() {
     return (
       <div className="calendar">
-        <Modal
-          showModal={this.state.showModal}
-          dateID={this.state.dateID}
-          dateIDms={this.state.dateIDms}
-          dateIDnum={this.state.dateIDnum}
-          handleClose={this.hideModal}
-        />
+        <div className="maku">
+          <Modal
+            showModal={this.state.showModal}
+            dateID={this.state.dateID}
+            dateIDms={this.state.dateIDms}
+            dateIDnum={this.state.dateIDnum}
+            handleClose={this.hideModal}
+          />
+        </div>
+
         {this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
