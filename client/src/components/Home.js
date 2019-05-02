@@ -105,18 +105,19 @@ class Home extends React.Component {
       ))
       .reverse();
   };
-  componentDidMount() {
+  getData() {
+    console.log('getdate ga yobareata');
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) return '';
 
     let today = new Date();
     today = today.toString().slice(0, 15);
     today = dateFns.format(today, 'x');
+
     let kijun;
     let arr = [];
     let sArr = [];
-    const index = dataFromServer.findIndex((obj, index) => {
-      console.log(obj, index);
+    dataFromServer.findIndex((obj, index) => {
       kijun = dataFromServer[index + 1];
       if (kijun) {
         if (
@@ -131,8 +132,9 @@ class Home extends React.Component {
         }
       }
     });
-    console.log(arr);
-    this.setState({ arr });
+
+    // this.setState({ arr });
+    return arr;
   }
   funA = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
@@ -146,23 +148,58 @@ class Home extends React.Component {
 
     if (index !== -1) {
       for (let i = index; i > 0; i--) {
-        console.log(i);
         if (dataFromServer[i].periodNew) {
           console.log('aaa', dataFromServer[i].dateIDms);
           let dayday = today - dataFromServer[i].dateIDms;
 
           let a = dayday / 86400000;
-          console.log(a);
+
           return a;
         }
       }
     }
   };
+  funDate = () => {
+    const data = this.getData();
+
+    return data
+      .map(arr => (
+        <p>
+          {arr[0].date}-----{arr[arr.length - 1].date}
+        </p>
+      ))
+      .reverse();
+  };
+  funLength = () => {
+    const data = this.getData();
+    console.log(data);
+    return data.map(item => <p>{item.length}days</p>);
+  };
+  funCycle = () => {
+    const data = this.getData();
+
+    const x = data.map((item, index) => {
+      if (data[index + 1]) {
+        return Math.round(
+          (data[index + 1][0].dateIDms - item[0].dateIDms) / 86400000
+        );
+      } else {
+        return '?';
+      }
+    });
+    console.log(x);
+
+    return x.map(item => <p>cycle:{item}days</p>);
+  };
   render() {
     return (
       <div>
         <p>{this.funA()}...DAYS SINCE LAST PERIOD STARTED</p>
-        <div style={{ display: 'flex' }} />
+        <div style={{ display: 'flex' }}>
+          <div> {this.funDate()}</div>
+          <div style={{ border: 'solid 2px' }}> {this.funLength()}</div>
+          <div> {this.funCycle()}</div>
+        </div>
       </div>
     );
   }

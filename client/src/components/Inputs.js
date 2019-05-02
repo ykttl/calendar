@@ -1,9 +1,9 @@
 import React from 'react';
-
+import dateFns from 'date-fns';
 let message = {
   periodEnd: null
 };
-
+var todayVAR;
 class Inputs extends React.Component {
   data = [];
   state = {
@@ -122,7 +122,18 @@ class Inputs extends React.Component {
     );
   };
   componentDidMount() {
+    console.log('INPUT JS');
     this.handlePeriodStart();
+    console.log(this.props.dateID);
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) return '';
+    let today = new Date();
+    today = today.toString().slice(0, 15);
+    today = dateFns.format(today, 'x');
+    console.log('baka', today);
+
+    todayVAR = today;
+    console.log(todayVAR);
   }
   handlePeriodStart = e => {
     this.setState({ period: { start: !this.state.period.start } });
@@ -230,8 +241,10 @@ class Inputs extends React.Component {
       <div>
         <div>
           <p>{this.state.err !== '' && this.state.err}</p>
-          <div>
-            period:
+          period:
+          {this.props.dateIDms > todayVAR ? (
+            <input disabled type="checkbox" style={{ cursor: 'not-allowed' }} />
+          ) : (
             <input
               type="checkbox"
               checked={this.state.periodNew === true ? 'checked' : false}
@@ -239,8 +252,7 @@ class Inputs extends React.Component {
                 this.setState({ periodNew: !this.state.periodNew });
               }}
             />
-          </div>
-
+          )}
           <div>
             ovulation:start
             <input
@@ -265,7 +277,6 @@ class Inputs extends React.Component {
               }}
             />
           </div>
-
           <div>
             Temperature:
             <input
@@ -290,7 +301,6 @@ class Inputs extends React.Component {
               <option value="heavy">heavy</option>
             </select>
           </div>
-
           <div>
             Took any medicine?
             <input
@@ -334,7 +344,6 @@ class Inputs extends React.Component {
           <button style={{ color: 'red' }} onClick={this.saveToServer}>
             SAVE
           </button>
-
           <p>symptoms:{this.state.symptoms}</p>
           <p>note:{this.state.note}</p>
           <p>moods:{this.state.moods}</p>

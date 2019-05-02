@@ -9,6 +9,7 @@ class Modal extends React.Component {
   // }
 
   render() {
+    console.log(this.props.controllPeriodInput);
     const showHideClassName = this.props.showModal
       ? 'modal display-block'
       : 'modal display-none';
@@ -24,6 +25,7 @@ class Modal extends React.Component {
             dateID={this.props.dateID}
             dateIDms={this.props.dateIDms}
             dateIDnum={this.props.dateIDnum}
+            controllPeriodInput={this.props.controllPeriodInput}
           />
         </section>
       </div>

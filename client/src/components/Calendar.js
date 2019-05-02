@@ -18,7 +18,8 @@ class Calendar extends React.Component {
     showModal: false,
     dateID: '',
     dateIDms: '',
-    dateIDnum: ''
+    dateIDnum: '',
+    controllPeriodInput: false
   };
 
   renderHeader = () => {
@@ -73,9 +74,10 @@ class Calendar extends React.Component {
     let medicineIcon;
     let symptomsIcon;
     let noteIcon;
-    let periodToggle = false;
+    let periodToggle;
 
     while (day <= endDate) {
+      controllPeriodInput = false;
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat);
 
@@ -83,6 +85,7 @@ class Calendar extends React.Component {
         const dateID = day.toString().slice(0, 15);
         const dateIDms = dateFns.format(day, 'x');
         const dateIDnum = dateFns.format(day, 'YYYYMD');
+        var controllPeriodInput = false;
 
         let css = [];
 
@@ -155,36 +158,13 @@ class Calendar extends React.Component {
           css.push('');
         }
 
-        // if (gaga === true) {
-        //   css.push('gaga');
-        // }
-
         let today = new Date();
         today = today.toString().slice(0, 15);
         today = dateFns.format(today, 'x');
 
-        // console.log(day, gaga, end, dateIDms >= today);
-
-        if (gaga && dateIDms <= today && dateIDms <= dateIDms + 86400000 * 5) {
-          console.log(day);
-          css.push('gaga');
+        if (dateIDms > today) {
+          controllPeriodInput = true;
         }
-        if (gaga && end) {
-          console.log('kokokokoko', day);
-          css.push('gaga');
-        }
-        // console.log(css);
-        // console.log(css.indexOf('disabled'));
-        // console.log(css.indexOf('gaga'));
-
-        // if (css.indexOf('disabled') !== -1 ) {
-        //   console.log(day, 'oooo');
-        //   css.push('opa');
-        // }
-        // if (opa) {
-        //   css.push('opa');
-        //   opa = false;
-        // }
 
         css = css.join(' ');
 
@@ -200,7 +180,8 @@ class Calendar extends React.Component {
                 dateFns.parse(cloneDay),
                 dateID,
                 dateIDms,
-                dateIDnum
+                dateIDnum,
+                controllPeriodInput
               )
             }
           >
@@ -230,8 +211,8 @@ class Calendar extends React.Component {
     return <div className="body">{rows}</div>;
   };
 
-  onDateClick = (day, dateID, dateIDms) => {
-    this.showModal(dateID, dateIDms);
+  onDateClick = (day, dateID, dateIDms, controllPeriodInput) => {
+    this.showModal(dateID, dateIDms, controllPeriodInput);
     this.setState({
       selectedDate: day
     });
@@ -249,12 +230,13 @@ class Calendar extends React.Component {
 
   // ============== modal ===========================
 
-  showModal = (dateID, dateIDms, dateIDnum) => {
+  showModal = (dateID, dateIDms, dateIDnum, controllPeriodInput) => {
     this.setState({
       showModal: true,
       dateID: dateID,
       dateIDms: dateIDms,
-      dateIDnum: dateIDnum
+      dateIDnum: dateIDnum,
+      controllPeriodInput: controllPeriodInput
     });
   };
 
@@ -272,6 +254,7 @@ class Calendar extends React.Component {
             dateID={this.state.dateID}
             dateIDms={this.state.dateIDms}
             dateIDnum={this.state.dateIDnum}
+            controllPeriodInput={this.state.controllPeriodInput}
             handleClose={this.hideModal}
           />
         </div>
