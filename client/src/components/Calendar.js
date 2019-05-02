@@ -89,10 +89,12 @@ class Calendar extends React.Component {
         // ============== adding CSS ==================================
         if (dataFromServer) {
           dataFromServer.find(obj => {
-            console.log(dataFromServer, 'aaa');
             if (obj.date === dateID) {
               // intercourseIcon = 'aaaa';
               // console.log(intercourseIcon);
+              if (obj.periodNew) {
+                css.push('period-start');
+              }
 
               if (obj.period.start) {
                 gaga = true;

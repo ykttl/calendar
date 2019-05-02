@@ -22,7 +22,8 @@ class Inputs extends React.Component {
     medicine: false,
     intercourse: false,
     note: '',
-    err: ''
+    err: '',
+    periodNew: false
   };
   componentDidUpdate(prevPro, prevState) {
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
@@ -42,7 +43,8 @@ class Inputs extends React.Component {
       medicine: false,
       intercourse: false,
       note: '',
-      err: ''
+      err: '',
+      periodNew: false
     });
     let dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) {
@@ -72,7 +74,8 @@ class Inputs extends React.Component {
         symptoms: theData.symptoms,
         medicine: theData.medicine,
         intercourse: theData.intercourse,
-        note: theData.note
+        note: theData.note,
+        periodNew: theData.periodNew
       });
     }
     console.log(dataFromServer);
@@ -227,119 +230,116 @@ class Inputs extends React.Component {
       <div>
         <div>
           <p>{this.state.err !== '' && this.state.err}</p>
-          Period:start
-          <input
-            checked={this.state.period.start === true ? 'checked' : false}
-            type="radio"
-            name="period"
-            onChange={this.handlePeriodStart}
-          />
-          end
-          <input
-            checked={this.state.period.end === true ? 'checked' : false}
-            type="radio"
-            name="period"
-            onChange={this.handlePeriodEnd}
-          />
-        </div>
-        <div>
-          ovulation:start
-          <input
-            checked={this.state.ovulation.start === true ? 'checked' : false}
-            type="radio"
-            name="ovulation"
-            onChange={e => {
-              this.setState({
-                ovulation: { start: !this.state.ovulation.start }
-              });
-            }}
-          />
-          end
-          <input
-            checked={this.state.ovulation.end === true ? 'checked' : false}
-            type="radio"
-            name="ovulation"
-            onChange={e => {
-              this.setState({
-                ovulation: { end: !this.state.ovulation.end }
-              });
-            }}
-          />
-        </div>
+          <div>
+            period:
+            <input
+              type="checkbox"
+              checked={this.state.periodNew === true ? 'checked' : false}
+              onChange={() => {
+                this.setState({ periodNew: !this.state.periodNew });
+              }}
+            />
+          </div>
 
-        <div>
-          Temperature:
-          <input
-            type="text"
-            onChange={e => {
-              this.setState({ temperature: e.target.value });
-            }}
-            value={this.state.temperature}
-          />
-        </div>
-        <div>
-          any symptoms?
-          <select
-            onChange={e => {
-              this.setState({ symptoms: e.target.value });
-            }}
-            value={this.state.symptoms}
-          >
-            <option value="">-</option>
-            <option value="headache">headache</option>
-            <option value="crump">crump</option>
-            <option value="heavy">heavy</option>
-          </select>
-        </div>
+          <div>
+            ovulation:start
+            <input
+              checked={this.state.ovulation.start === true ? 'checked' : false}
+              type="radio"
+              name="ovulation"
+              onChange={e => {
+                this.setState({
+                  ovulation: { start: !this.state.ovulation.start }
+                });
+              }}
+            />
+            end
+            <input
+              checked={this.state.ovulation.end === true ? 'checked' : false}
+              type="radio"
+              name="ovulation"
+              onChange={e => {
+                this.setState({
+                  ovulation: { end: !this.state.ovulation.end }
+                });
+              }}
+            />
+          </div>
 
-        <div>
-          Took any medicine?
-          <input
-            type="checkbox"
-            checked={this.state.medicine === true ? 'checked' : false}
-            onChange={() => {
-              this.setState({ medicine: !this.state.medicine });
-            }}
-          />
-        </div>
-        <div>
-          intercourse?
-          <input
-            type="checkbox"
-            checked={this.state.intercourse === true ? 'checked' : false}
-            onChange={() => {
-              this.setState({ intercourse: !this.state.intercourse });
-            }}
-          />
-        </div>
-        <div>
-          moods:
-          <input
-            type="text"
-            onChange={e => {
-              this.setState({ moods: e.target.value });
-            }}
-            value={this.state.moods}
-          />
-        </div>
-        <div>
-          Note:
-          <input
-            type="text"
-            onChange={e => {
-              this.setState({ note: e.target.value });
-            }}
-            value={this.state.note}
-          />
-        </div>
-        <button style={{ color: 'red' }} onClick={this.saveToServer}>
-          SAVE
-        </button>
+          <div>
+            Temperature:
+            <input
+              type="text"
+              onChange={e => {
+                this.setState({ temperature: e.target.value });
+              }}
+              value={this.state.temperature}
+            />
+          </div>
+          <div>
+            any symptoms?
+            <select
+              onChange={e => {
+                this.setState({ symptoms: e.target.value });
+              }}
+              value={this.state.symptoms}
+            >
+              <option value="">-</option>
+              <option value="headache">headache</option>
+              <option value="crump">crump</option>
+              <option value="heavy">heavy</option>
+            </select>
+          </div>
 
-        <p>symptoms:{this.state.symptoms}</p>
-        <p>note:{this.state.note}</p>
-        <p>moods:{this.state.moods}</p>
-        <p>temperature:{this.state.temperature}</p>
+          <div>
+            Took any medicine?
+            <input
+              type="checkbox"
+              checked={this.state.medicine === true ? 'checked' : false}
+              onChange={() => {
+                this.setState({ medicine: !this.state.medicine });
+              }}
+            />
+          </div>
+          <div>
+            intercourse?
+            <input
+              type="checkbox"
+              checked={this.state.intercourse === true ? 'checked' : false}
+              onChange={() => {
+                this.setState({ intercourse: !this.state.intercourse });
+              }}
+            />
+          </div>
+          <div>
+            moods:
+            <input
+              type="text"
+              onChange={e => {
+                this.setState({ moods: e.target.value });
+              }}
+              value={this.state.moods}
+            />
+          </div>
+          <div>
+            Note:
+            <input
+              type="text"
+              onChange={e => {
+                this.setState({ note: e.target.value });
+              }}
+              value={this.state.note}
+            />
+          </div>
+          <button style={{ color: 'red' }} onClick={this.saveToServer}>
+            SAVE
+          </button>
+
+          <p>symptoms:{this.state.symptoms}</p>
+          <p>note:{this.state.note}</p>
+          <p>moods:{this.state.moods}</p>
+          <p>temperature:{this.state.temperature}</p>
+        </div>
       </div>
     );
   }

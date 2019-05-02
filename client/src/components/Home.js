@@ -3,7 +3,7 @@ import dateFns from 'date-fns';
 // import PropTypes from 'prop-types';
 
 class Home extends React.Component {
-  state = { day: '' };
+  state = { arr: '' };
   arr = [];
   sinceHowManyDay = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
@@ -105,18 +105,70 @@ class Home extends React.Component {
       ))
       .reverse();
   };
+  componentDidMount() {
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) return '';
+
+    let today = new Date();
+    today = today.toString().slice(0, 15);
+    today = dateFns.format(today, 'x');
+    let kijun;
+    let arr = [];
+    let sArr = [];
+    const index = dataFromServer.findIndex((obj, index) => {
+      console.log(obj, index);
+      kijun = dataFromServer[index + 1];
+      if (kijun) {
+        if (
+          kijun.month === obj.month &&
+          parseInt(kijun.day) === parseInt(obj.day) + 1
+        ) {
+          sArr.push(obj);
+        } else {
+          sArr.push(obj);
+          arr.push(sArr);
+          sArr = [];
+        }
+      }
+    });
+    console.log(arr);
+    this.setState({ arr });
+  }
+  funA = () => {
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    if (!dataFromServer) return '';
+    let today = new Date();
+    today = today.toString().slice(0, 15);
+    today = dateFns.format(today, 'x');
+
+    const index = dataFromServer.findIndex(obj => obj.dateIDms >= today);
+    console.log(dataFromServer, index);
+
+    if (index !== -1) {
+      for (let i = index; i > 0; i--) {
+        console.log(i);
+        if (dataFromServer[i].periodNew) {
+          console.log('aaa', dataFromServer[i].dateIDms);
+          let dayday = today - dataFromServer[i].dateIDms;
+
+          let a = dayday / 86400000;
+          console.log(a);
+          return a;
+        }
+      }
+    }
+  };
   render() {
     return (
       <div>
-        <p>{this.sinceHowManyDay()}...DAYS SINCE LAST PERIOD STARTED</p>
-        <div style={{ display: 'flex' }}>
-          <div> {this.showList()}</div>
-          <div> {this.showDays()}</div>
-          <div> {this.showLength()}</div>
-        </div>
+        <p>{this.funA()}...DAYS SINCE LAST PERIOD STARTED</p>
+        <div style={{ display: 'flex' }} />
       </div>
     );
   }
 }
 
 export default Home;
+// <div> {this.funDate()}</div>
+//           <div> {this.funCycle()}</div>
+//           <div> {this.funLength()}</div>
