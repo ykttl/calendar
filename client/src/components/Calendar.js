@@ -1,6 +1,8 @@
 // this calendar is made by referring to https://github.com/moodydev/react-calendar
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 
+// (>_<)
+
 import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
