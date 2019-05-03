@@ -232,6 +232,10 @@ main {
   /* background: pink; */
   background: rgba(255, 0, 0, 0.1);
 }
+.today {
+  color: pink;
+  font-weight: bold;
+}
 /* .maku {
   background: white;
   opacity: 100;

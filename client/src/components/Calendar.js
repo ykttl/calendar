@@ -75,10 +75,13 @@ class Calendar extends React.Component {
     let symptomsIcon;
     let noteIcon;
     let periodToggle;
+    let todaytoday;
 
     while (day <= endDate) {
       controllPeriodInput = false;
+
       for (let i = 0; i < 7; i++) {
+        todaytoday = '';
         formattedDate = dateFns.format(day, dateFormat);
 
         const cloneDay = day;
@@ -165,6 +168,9 @@ class Calendar extends React.Component {
         if (dateIDms > today) {
           controllPeriodInput = true;
         }
+        if (dateIDms === today) {
+          todaytoday = ' Today';
+        }
 
         css = css.join(' ');
 
@@ -187,6 +193,7 @@ class Calendar extends React.Component {
           >
             <span className="number">{formattedDate}</span>
             <span className="bg">{formattedDate}</span>
+            <span className="today">{todaytoday}</span>
             <p />
             {intercourseIcon}
             {medicineIcon}

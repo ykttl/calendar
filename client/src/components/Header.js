@@ -7,10 +7,10 @@ class Header extends React.Component {
       <nav>
         <ul>
           <li>
-            <Link to="/">Log</Link>
+            <Link to="/">Calendar</Link>
           </li>
           <li>
-            <Link to="/calendar">Calendar</Link>
+            <Link to="/log">Log</Link>
           </li>
           <li>
             <Link to="/chart">Chart</Link>

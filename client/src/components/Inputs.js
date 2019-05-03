@@ -241,17 +241,27 @@ class Inputs extends React.Component {
       <div>
         <div>
           <p>{this.state.err !== '' && this.state.err}</p>
-          period:
+
           {this.props.dateIDms > todayVAR ? (
-            <input disabled type="checkbox" style={{ cursor: 'not-allowed' }} />
+            <div>
+              <strike>period</strike>
+              <input
+                disabled
+                type="checkbox"
+                style={{ cursor: 'not-allowed' }}
+              />
+            </div>
           ) : (
-            <input
-              type="checkbox"
-              checked={this.state.periodNew === true ? 'checked' : false}
-              onChange={() => {
-                this.setState({ periodNew: !this.state.periodNew });
-              }}
-            />
+            <div>
+              peripd:
+              <input
+                type="checkbox"
+                checked={this.state.periodNew === true ? 'checked' : false}
+                onChange={() => {
+                  this.setState({ periodNew: !this.state.periodNew });
+                }}
+              />
+            </div>
           )}
           <div>
             ovulation:start
