@@ -3,10 +3,11 @@ import dateFns from 'date-fns';
 import React from 'react';
 
 class Chart extends React.Component {
-  // state = {
-  //   range: 1
-  // }  test;
-  // label;;
+  state = {
+    range: 1
+  };
+  test;
+  label;
   state = {
     currentMonth: new Date(),
     selectedDate: new Date()
@@ -40,7 +41,8 @@ class Chart extends React.Component {
       return [];
     }
     //let arr = [];
-    this.test = dataFromServer.map(item => {
+
+    const period = dataFromServer.map(item => {
       if (item.periodNew) {
         return 38;
       } else {
@@ -48,62 +50,50 @@ class Chart extends React.Component {
       }
     });
 
-    return this.test;
+    // return this.test;
   };
   getLabel = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    console.log('server', dataFromServer);
+
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
 
     const day = dateFns.format(monthStart, 'd');
-    console.log(day);
 
     var result = dateFns.eachDay(monthStart, monthEnd);
-    const label = result.map(item => item.toString().slice(4, 10));
-    return label;
-    // const startDate = dateFns.startOfWeek(monthStart);
-    // const endDate = dateFns.endOfWeek(monthEnd);
-    // const dateFormat = 'D';
-    // const rows = [];
-    // let days = [];
-    // let day = startDate;
-    // let formattedDate = '';
 
-    // while (day <= endDate) {
-    //   console.log(day, endDate);
-    //   for (let i = 0; i < 7; i++) {
-    //     formattedDate = dateFns.format(day, dateFormat);
+    let chartData = [];
 
-    //     const cloneDay = day;
-    //     const dateID = day.toString().slice(0, 15);
-    //     const dateIDms = dateFns.format(day, 'x');
-    //     const dateIDnum = dateFns.format(day, 'YYYYMD');
+    let period = dataFromServer.filter(item => item.periodNew);
+    let temperature = dataFromServer.filter(item => item.temperature !== '');
 
-    //     days.push(day);
+    result.forEach(item =>
+      chartData.push({ label: item.toString().slice(4, 10) })
+    );
+    console.log(chartData);
 
-    //     day = dateFns.addDays(day, 1);
-    //   }
-    //   rows.push(days);
-    //   days = [];
-    // }
+    chartData.forEach((data, index) => {
+      for (let i = 0; i < period.length; i++) {
+        if (data.label === period[i].date.slice(4, 10)) {
+          chartData[index]['period'] = 37;
+        }
+      }
+    });
 
-    // console.log('days', rows);
+    chartData.forEach((data, index) => {
+      for (let i = 0; i < temperature.length; i++) {
+        if (data.label === temperature[i].date.slice(4, 10)) {
+          chartData[index]['temp'] = temperature[i].temperature;
+        }
+      }
+    });
 
-    // end = false;
-    // return <div className="body">{rows}</div>;
+    console.log(chartData);
 
-    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    // if (!dataFromServer) {
-    //   return [];
-    // }
-
-    // this.label = dataFromServer.map(
-    //   item => item.date.slice(4, 7) + parseFloat(item.date.slice(8, 10))
-    // );
-
-    // return this.label;
+    return chartData;
+    // const label = result.map(item => item.toString().slice(4, 10));
+    // return label;
   };
   render() {
     var options = {
@@ -117,25 +107,22 @@ class Chart extends React.Component {
       }
     };
     const data = {
-      labels: this.getLabel(),
+      labels: this.getLabel().map(item => item.label),
       datasets: [
         {
           label: 'Temperature',
           backgroundColor: ['rgba(255, 99, 132, 0.2)'],
           borderColor: 'rgb(255, 99, 132)',
           fill: false,
-          data: this.getData(),
+          data: this.getLabel().map(item => item.temp),
           spanGaps: true,
           type: 'line'
         },
         {
           label: 'period',
-          data: this.getPeriodData(),
+          data: this.getLabel().map(item => item.period),
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
 
-          fillColor: 'rgba(220,220,220,0.5)',
-          strokeColor: 'rgba(220,220,220,0.8)',
-          highlightFill: 'rgba(220,220,220,0.75)',
-          highlightStroke: 'rgba(220,220,220,1)',
           type: 'bar'
         }
       ]
