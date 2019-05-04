@@ -4,12 +4,7 @@ import '../App.css';
 import '../modal.css';
 
 class Modal extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-
   render() {
-    console.log(this.props.controllPeriodInput);
     const showHideClassName = this.props.showModal
       ? 'modal display-block'
       : 'modal display-none';
@@ -18,15 +13,9 @@ class Modal extends React.Component {
       <div className={showHideClassName}>
         <section className="modal-main">
           {this.props.children}
-
           <button onClick={this.props.handleClose}>close</button>
           <p> {this.props.dateID}</p>
-          <Inputs
-            dateID={this.props.dateID}
-            dateIDms={this.props.dateIDms}
-            dateIDnum={this.props.dateIDnum}
-            controllPeriodInput={this.props.controllPeriodInput}
-          />
+          <Inputs dateID={this.props.dateID} dateIDms={this.props.dateIDms} />
         </section>
       </div>
     );

@@ -4,7 +4,7 @@ import dateFns from 'date-fns';
 class Log extends React.Component {
   getPeriodData() {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) return '';
+    if (!dataFromServer) return null;
 
     let today = new Date();
     today = today.toString().slice(0, 15);
@@ -13,7 +13,7 @@ class Log extends React.Component {
     let daysOfPeriod = [];
     let listOfPeriods = [];
 
-    const periodArr = dataFromServer.filter(data => data.periodNew);
+    const periodArr = dataFromServer.filter(data => data.period);
 
     periodArr.findIndex((day, index) => {
       let nextDayInArr = periodArr[index + 1];
@@ -42,6 +42,7 @@ class Log extends React.Component {
 
   getElapsedDays = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
     const firstDayOfPrevPeriod = data[0][0].dateIDms;
 
     let today = new Date();
@@ -60,6 +61,7 @@ class Log extends React.Component {
 
   getDuration = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
 
     return data.map(arr => {
       const firstDay = arr[0].date;
@@ -74,11 +76,13 @@ class Log extends React.Component {
 
   getLength = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
     return data.map(period => <p>{period.length}days</p>);
   };
 
   getCycle = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
 
     const listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -98,6 +102,7 @@ class Log extends React.Component {
 
   averageCycle = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
 
     let listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -111,15 +116,19 @@ class Log extends React.Component {
         return '---';
       }
     });
+
     listOfCycle = listOfCycle.filter(cycle => typeof cycle === 'number');
 
-    const sum = listOfCycle.reduce((a, b) => a + b);
-    const average = Math.round(sum / listOfCycle.length);
-    return <p>Average Cycle：every {average} days</p>;
+    if (listOfCycle.length !== 0) {
+      const sum = listOfCycle.reduce((a, b) => a + b);
+      const average = Math.round(sum / listOfCycle.length);
+      return <p>Average Cycle：every {average} days</p>;
+    }
   };
 
   averageLength = () => {
     const data = this.getPeriodData();
+    if (data === null) return;
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);

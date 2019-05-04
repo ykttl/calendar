@@ -1,15 +1,9 @@
 // this calendar is made by referring to https://github.com/moodydev/react-calendar
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 
-// (>_<)
-
 import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
-
-var gaga;
-var opa = false;
-var end = false;
 
 class Calendar extends React.Component {
   state = {
@@ -18,8 +12,9 @@ class Calendar extends React.Component {
     showModal: false,
     dateID: '',
     dateIDms: '',
-    dateIDnum: '',
-    controllPeriodInput: false
+    averageCycle: '',
+    aveLength: '',
+    lastPeridoInfo: ''
   };
 
   renderHeader = () => {
@@ -57,9 +52,92 @@ class Calendar extends React.Component {
     return <div className="days row">{days}</div>;
   };
 
-  renderCells = () => {
+  getPeriodData() {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    console.log('server', dataFromServer);
+    if (!dataFromServer) return null;
+
+    let today = new Date();
+    today = today.toString().slice(0, 15);
+    today = dateFns.format(today, 'x');
+
+    let daysOfPeriod = [];
+    let listOfPeriods = [];
+
+    const periodArr = dataFromServer.filter(data => data.period);
+
+    periodArr.findIndex((day, index) => {
+      let nextDayInArr = periodArr[index + 1];
+
+      if (nextDayInArr) {
+        let dayDifference = Math.round(
+          (nextDayInArr.dateIDms - day.dateIDms) / 86400000
+        );
+        if (dayDifference === 1) {
+          daysOfPeriod.push(day);
+        } else {
+          daysOfPeriod.push(day);
+          listOfPeriods.push(daysOfPeriod);
+          daysOfPeriod = [];
+        }
+      }
+
+      if (!nextDayInArr) {
+        daysOfPeriod.push(day);
+        listOfPeriods.push(daysOfPeriod);
+        daysOfPeriod = [];
+      }
+    });
+    console.log(listOfPeriods);
+
+    const lastPeridoInfo = listOfPeriods[listOfPeriods.length - 1];
+    this.state.lastPeridoInfo = lastPeridoInfo;
+
+    return listOfPeriods.reverse();
+  }
+  averageCycle = () => {
+    const data = this.getPeriodData();
+    if (data === null) return;
+
+    let listOfCycle = data.map((period, index) => {
+      let prevPeriod = data[index + 1];
+
+      if (prevPeriod) {
+        const cycle = Math.round(
+          (period[0].dateIDms - prevPeriod[0].dateIDms) / 86400000
+        );
+        return cycle;
+      } else {
+        return '---';
+      }
+    });
+
+    listOfCycle = listOfCycle.filter(cycle => typeof cycle === 'number');
+
+    if (listOfCycle.length !== 0) {
+      const sum = listOfCycle.reduce((a, b) => a + b);
+      const average = Math.round(sum / listOfCycle.length);
+      this.state.averageCycle = average;
+      // console.log(average);
+      // return <p>Average Cycle：every {average} days</p>;
+    }
+  };
+
+  averageLength = () => {
+    const data = this.getPeriodData();
+    if (data === null) return;
+    const listOfLength = data.map(period => period.length);
+    const sum = listOfLength.reduce((a, b) => a + b);
+    const average = Math.round(sum / listOfLength.length);
+    this.state.aveLength = average;
+  };
+
+  renderCells = () => {
+    this.averageCycle();
+    this.averageLength();
+    console.log(this.state);
+
+    const dataFromServer = JSON.parse(localStorage.getItem('data'));
+
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -70,48 +148,29 @@ class Calendar extends React.Component {
     let days = [];
     let day = startDate;
     let formattedDate = '';
+
+    let noteIcon;
     let intercourseIcon;
     let medicineIcon;
     let symptomsIcon;
-    let noteIcon;
-    let periodToggle;
-    let todaytoday;
+    let temperatureIcon;
+    let messageToday;
 
     while (day <= endDate) {
-      controllPeriodInput = false;
-
       for (let i = 0; i < 7; i++) {
-        todaytoday = '';
         formattedDate = dateFns.format(day, dateFormat);
 
         const cloneDay = day;
         const dateID = day.toString().slice(0, 15);
         const dateIDms = dateFns.format(day, 'x');
-        const dateIDnum = dateFns.format(day, 'YYYYMD');
-        var controllPeriodInput = false;
-
         let css = [];
 
         // ============== adding CSS ==================================
         if (dataFromServer) {
           dataFromServer.find(obj => {
             if (obj.date === dateID) {
-              // intercourseIcon = 'aaaa';
-              // console.log(intercourseIcon);
-              if (obj.periodNew) {
+              if (obj.period) {
                 css.push('period-start');
-              }
-
-              if (obj.period.start) {
-                gaga = true;
-                css.push('period-start');
-              }
-
-              if (obj.period.end) {
-                gaga = false;
-                // end = true;
-
-                css.push('period-end');
               }
 
               if (obj.medicine) {
@@ -119,8 +178,6 @@ class Calendar extends React.Component {
                 medicineIcon = (
                   <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
                 );
-              } else {
-                medicineIcon = '';
               }
 
               if (obj.intercourse) {
@@ -128,16 +185,12 @@ class Calendar extends React.Component {
                 intercourseIcon = (
                   <img src="https://img.icons8.com/office/25/000000/hearts.png" />
                 );
-              } else {
-                intercourseIcon = '';
               }
 
               if (obj.symptoms !== '') {
                 symptomsIcon = (
                   <img src="https://img.icons8.com/color/25/000000/question.png" />
                 );
-              } else {
-                symptomsIcon = '';
               }
 
               if (obj.note !== '') {
@@ -146,12 +199,90 @@ class Calendar extends React.Component {
                 noteIcon = (
                   <img src="https://img.icons8.com/ios/25/000000/note.png" />
                 );
-              } else {
-                noteIcon = '';
+              }
+
+              if (obj.temperature !== '') {
+                temperatureIcon = (
+                  <img src="https://img.icons8.com/office/25/000000/thermometer.png" />
+                );
               }
             }
           });
         }
+
+        // ======生理予想日にも色をつける=====
+
+        const prevFist = parseInt(this.state.lastPeridoInfo[0].dateIDms);
+        const prevLast = parseInt(
+          this.state.lastPeridoInfo[this.state.lastPeridoInfo.length - 1]
+            .dateIDms
+        );
+        const gap = dateIDms - prevFist;
+
+        if (gap % (this.state.averageCycle * 86400000) === 0) {
+          css.push('period-start');
+        }
+        if (
+          (gap % (this.state.averageCycle * 86400000)) / 86400000 <=
+          this.state.aveLength
+        ) {
+          css.push('period-start');
+        }
+        // let r = gap - this.state.averageCycle * 86400000;
+        // r = r / 86400000;
+        // if (r >= 0 && r <= this.state.aveLength) {
+        //   css.push('period-start');
+        // }
+        // if ((gap - r) % (this.state.averageCycle * 86400000) === 0) {
+        //   css.push('period-start');
+        // }
+
+        // console.log((gap % (this.state.averageCycle * 86400000)) / 86400000);
+        // console.log(typeof dateIDms === 'number');
+        // if (dateIDms > prevFist + this.state.averageCycle * 86400000) {
+        //   console.log(day);
+        //   if (
+        //     (dateIDms - prevFist) % (this.state.averageCycle * 86400000) ===
+        //     0
+        //   ) {
+        //     css.push('period-start');
+        //   }
+        // }
+
+        // let x;
+        // console.log(
+        //   dateFns.addDays(prevFist, this.state.averageCycle * 86400000)
+        // );
+
+        // if (
+        //   dateIDms >
+        //   dateFns.addDays(prevFist, this.state.averageCycle * 86400000)
+        // ) {
+        //   if (gap % this.state.averageCycle === 0) {
+        //     css.push('period-start');
+        //   }
+
+        //   if (dateIDms - prevFist <= this.state.aveLength * 86400000) {
+        //     console.log('ok');
+        //     css.push('period-start');
+        //   }
+
+        // if (x >= 86400000 && x <= this.state.aveLength * 86400000) {
+        //   if ((gap - x) % this.state.averageCycle === 0) {
+        //     console.log('ok', day);
+        //   }
+        // }
+        //}
+
+        // (x >= 0 && x <= (this.state.aveLength - 1) * 86400000)
+        // if (x === 86400000 && (gap - x) % this.state.averageCycle === 0) {
+        //   css.push('period-start');
+        // }
+        // }
+
+        // A >= min && A <= max
+
+        // ======/生理予想日にも色をつける=====
 
         if (!dateFns.isSameMonth(day, monthStart)) {
           css.push('disabled');
@@ -165,11 +296,8 @@ class Calendar extends React.Component {
         today = today.toString().slice(0, 15);
         today = dateFns.format(today, 'x');
 
-        if (dateIDms > today) {
-          controllPeriodInput = true;
-        }
         if (dateIDms === today) {
-          todaytoday = ' Today';
+          messageToday = ' Today';
         }
 
         css = css.join(' ');
@@ -185,26 +313,28 @@ class Calendar extends React.Component {
               this.onDateClick(
                 dateFns.parse(cloneDay),
                 dateID,
-                dateIDms,
-                dateIDnum,
-                controllPeriodInput
+                dateIDms
+                // controllPeriodInput
               )
             }
           >
             <span className="number">{formattedDate}</span>
             <span className="bg">{formattedDate}</span>
-            <span className="today">{todaytoday}</span>
+            <span className="today">{messageToday}</span>
             <p />
             {intercourseIcon}
             {medicineIcon}
             {symptomsIcon}
             {noteIcon}
+            {temperatureIcon}
           </div>
         );
+        messageToday = '';
         intercourseIcon = '';
         medicineIcon = '';
         symptomsIcon = '';
         noteIcon = '';
+        temperatureIcon = '';
         day = dateFns.addDays(day, 1);
       }
       rows.push(
@@ -218,8 +348,8 @@ class Calendar extends React.Component {
     return <div className="body">{rows}</div>;
   };
 
-  onDateClick = (day, dateID, dateIDms, controllPeriodInput) => {
-    this.showModal(dateID, dateIDms, controllPeriodInput);
+  onDateClick = (day, dateID, dateIDms) => {
+    this.showModal(dateID, dateIDms);
     this.setState({
       selectedDate: day
     });
@@ -237,13 +367,11 @@ class Calendar extends React.Component {
 
   // ============== modal ===========================
 
-  showModal = (dateID, dateIDms, dateIDnum, controllPeriodInput) => {
+  showModal = (dateID, dateIDms) => {
     this.setState({
       showModal: true,
       dateID: dateID,
-      dateIDms: dateIDms,
-      dateIDnum: dateIDnum,
-      controllPeriodInput: controllPeriodInput
+      dateIDms: dateIDms
     });
   };
 
@@ -255,16 +383,12 @@ class Calendar extends React.Component {
   render() {
     return (
       <div className="calendar">
-        <div className="maku">
-          <Modal
-            showModal={this.state.showModal}
-            dateID={this.state.dateID}
-            dateIDms={this.state.dateIDms}
-            dateIDnum={this.state.dateIDnum}
-            controllPeriodInput={this.state.controllPeriodInput}
-            handleClose={this.hideModal}
-          />
-        </div>
+        <Modal
+          showModal={this.state.showModal}
+          dateID={this.state.dateID}
+          dateIDms={this.state.dateIDms}
+          handleClose={this.hideModal}
+        />
 
         {this.renderHeader()}
         {this.renderDays()}

@@ -1,144 +1,113 @@
-import { Line, Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import dateFns from 'date-fns';
 import React from 'react';
 
 class Chart extends React.Component {
   state = {
-    range: 1
-  };
-  test;
-  label;
-  state = {
-    currentMonth: new Date(),
-    selectedDate: new Date()
+    currentMonth: new Date()
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    this.getData();
-  }
-  componentDidMount() {
-    this.getData();
-  }
+  handlePrevMonth = () => {
+    this.setState({
+      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+    });
+  };
+
+  handleNextMonth = () => {
+    this.setState({
+      currentMonth: dateFns.subMonths(this.state.currentMonth, -1)
+    });
+  };
+
   getData = () => {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) {
-      return [];
-    }
-    //let arr = [];
-    this.test = dataFromServer.map(item => {
-      if (item.temperature === '') {
-        return null;
-      } else {
-        return parseFloat(item.temperature);
-      }
-    });
-
-    return this.test;
-  };
-  getPeriodData = () => {
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) {
-      return [];
-    }
-    //let arr = [];
-
-    const period = dataFromServer.map(item => {
-      if (item.periodNew) {
-        return 38;
-      } else {
-        return null;
-      }
-    });
-
-    // return this.test;
-  };
-  getLabel = () => {
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-
-    const { currentMonth, selectedDate } = this.state;
+    const { currentMonth } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
-
-    const day = dateFns.format(monthStart, 'd');
-
-    var result = dateFns.eachDay(monthStart, monthEnd);
-
+    let eachDaysInMonth = dateFns.eachDay(monthStart, monthEnd);
     let chartData = [];
+    let periodArr = '';
+    let temperatureArr = '';
 
-    let period = dataFromServer.filter(item => item.periodNew);
-    let temperature = dataFromServer.filter(item => item.temperature !== '');
+    if (dataFromServer) {
+      periodArr = dataFromServer.filter(data => data.period);
+      temperatureArr = dataFromServer.filter(data => data.temperature !== '');
+    }
 
-    result.forEach(item =>
-      chartData.push({ label: item.toString().slice(4, 10) })
+    eachDaysInMonth.forEach(data =>
+      chartData.push({ label: data.toString().slice(4, 10) })
     );
-    console.log(chartData);
 
     chartData.forEach((data, index) => {
-      for (let i = 0; i < period.length; i++) {
-        if (data.label === period[i].date.slice(4, 10)) {
-          chartData[index]['period'] = 37;
+      for (let i = 0; i < periodArr.length; i++) {
+        if (data.label === periodArr[i].date.slice(4, 10)) {
+          chartData[index]['period'] = 38;
         }
       }
     });
 
     chartData.forEach((data, index) => {
-      for (let i = 0; i < temperature.length; i++) {
-        if (data.label === temperature[i].date.slice(4, 10)) {
-          chartData[index]['temp'] = temperature[i].temperature;
+      for (let i = 0; i < temperatureArr.length; i++) {
+        if (data.label === temperatureArr[i].date.slice(4, 10)) {
+          chartData[index]['temperature'] = temperatureArr[i].temperature;
         }
       }
     });
-
-    console.log(chartData);
-
     return chartData;
-    // const label = result.map(item => item.toString().slice(4, 10));
-    // return label;
   };
+
   render() {
-    var options = {
+    const options = {
       maintainAspectRatio: false,
       scales: {
         xAxes: [
           {
             barPercentage: 1.25
           }
+        ],
+        yAxes: [
+          {
+            ticks: {
+              min: 35,
+              max: 38
+            }
+          }
         ]
+      },
+      tooltips: {
+        enabled: false
       }
     };
     const data = {
-      labels: this.getLabel().map(item => item.label),
+      labels: this.getData().map(data => data.label),
       datasets: [
         {
           label: 'Temperature',
+          type: 'line',
+          data: this.getData().map(data => data.temperature),
           backgroundColor: ['rgba(255, 99, 132, 0.2)'],
           borderColor: 'rgb(255, 99, 132)',
           fill: false,
-          data: this.getLabel().map(item => item.temp),
-          spanGaps: true,
-          type: 'line'
+          spanGaps: true
         },
         {
-          label: 'period',
-          data: this.getLabel().map(item => item.period),
+          label: 'Period',
+          type: 'bar',
+          data: this.getData().map(data => data.period),
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
-
-          type: 'bar'
+          hoverBackgroundColor: 'rgba(255, 99, 132, 0.2)'
         }
       ]
     };
 
     return (
       <div>
-        <select>
-          <option value={1}>1</option>
-          <option value={3}>3</option>
-        </select>
-        <button>next</button>
-        <button>prev</button>
+        <button onClick={this.handlePrevMonth}>prev</button>
+        <button onClick={this.handleNextMonth}>next</button>
+        <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
         <div
           style={{
-            width: '80%',
+            width: '65%',
             margin: '0 auto',
             paddingTop: '100px'
           }}

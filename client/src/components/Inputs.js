@@ -9,21 +9,20 @@ class Inputs extends React.Component {
   state = {
     date: '',
     dateIDms: '',
-    dateNumID: '',
+
     month: '',
     day: '',
     year: '',
-    period: { start: false, end: false },
-    ovulation: { start: false, end: false },
+    ovulation: false,
     temperature: '',
     moods: [],
     symptoms: '',
-    suggestions: [],
+
     medicine: false,
     intercourse: false,
     note: '',
     err: '',
-    periodNew: false
+    period: false
   };
   componentDidUpdate(prevPro, prevState) {
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
@@ -31,12 +30,11 @@ class Inputs extends React.Component {
     this.setState({
       date: '',
       dateIDms: '',
-      dateNumID: '',
+
       month: '',
       day: '',
       year: '',
-      period: { start: false, end: false },
-      ovulation: { start: false, end: false },
+      ovulation: false,
       temperature: '',
       moods: [],
       symptoms: '',
@@ -44,7 +42,7 @@ class Inputs extends React.Component {
       intercourse: false,
       note: '',
       err: '',
-      periodNew: false
+      period: false
     });
     let dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) {
@@ -60,25 +58,20 @@ class Inputs extends React.Component {
       this.setState({
         date: this.props.dataID,
         dateIDms: this.props.dateIDms,
-        dateNumID: this.props.dateIDnum,
+
         month: this.props.dateID.slice(4, 7),
         day: this.props.dateID.slice(8, 10),
         year: this.props.dateID.slice(11, 15),
-        period: { start: theData.period.start, end: theData.period.end },
-        ovulation: {
-          start: theData.ovulation.start,
-          end: theData.ovulation.end
-        },
         temperature: theData.temperature,
         moods: theData.moods,
         symptoms: theData.symptoms,
         medicine: theData.medicine,
         intercourse: theData.intercourse,
         note: theData.note,
-        periodNew: theData.periodNew
+        period: theData.period,
+        ovulation: theData.ovulation
       });
     }
-    console.log(dataFromServer);
   }
 
   saveToServer = () => {
@@ -86,7 +79,7 @@ class Inputs extends React.Component {
       {
         date: this.props.dateID,
         dateIDms: this.props.dateIDms,
-        dateNumID: this.props.dateIDnum,
+
         month: this.props.dateID.slice(4, 7),
         day: this.props.dateID.slice(8, 10),
         year: this.props.dateID.slice(11, 15)
@@ -122,120 +115,15 @@ class Inputs extends React.Component {
     );
   };
   componentDidMount() {
-    console.log('INPUT JS');
-    this.handlePeriodStart();
-    console.log(this.props.dateID);
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) return '';
     let today = new Date();
     today = today.toString().slice(0, 15);
     today = dateFns.format(today, 'x');
-    console.log('baka', today);
 
     todayVAR = today;
-    console.log(todayVAR);
   }
-  handlePeriodStart = e => {
-    this.setState({ period: { start: !this.state.period.start } });
 
-    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
-
-    // const index = dataFromServer.findIndex(
-    //   obj => obj.dateIDms >= this.props.dateIDms
-    // );
-
-    // if (index === -1 && dataFromServer.length === 1) {
-    //   this.setState({ period: { start: !this.state.period.start } });
-    //   return;
-    // } else {
-    //   this.setState({
-    //     err: 'input ending date first!!!!',
-    //     period: { start: false }
-    //   });
-    // }
-
-    // if (index === -1) {
-    //   for (let i = dataFromServer.length - 1; i > 0; i--) {
-    //     if (dataFromServer[i].period && !dataFromServer[i].period.end) {
-    //       this.setState({
-    //         err: 'input ending date first!!!!',
-    //         period: { start: false }
-    //       });
-    //       return;
-    //     } else {
-    //       this.setState({ period: { start: !this.state.period.start } });
-    //       return;
-    //     }
-    //   }
-    // }
-  };
-  handlePeriodEnd = e => {
-    this.setState({ period: { end: !this.state.period.end } });
-    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
-
-    // const index = dataFromServer.findIndex(
-    //   obj => obj.dateIDms >= this.props.dateIDms
-    // );
-
-    // if (
-    //   index === -1 &&
-    //   dataFromServer.length === 1 &&
-    //   dataFromServer[0].period.start
-    // ) {
-    //   this.setState({ period: { end: !this.state.period.end } });
-    //   return;
-    // } else {
-    //   this.setState({
-    //     err: 'input starting date first!!!!',
-    //     period: { end: false }
-    //   });
-    // }
-
-    // if (index === -1) {
-    //   for (let i = dataFromServer.length - 1; i > 0; i--) {
-    //     if (dataFromServer[i].period && !dataFromServer[i].period.start) {
-    //       this.setState({
-    //         err: 'input starting date first!!!!',
-    //         period: { end: false }
-    //       });
-    //       return;
-    //     } else {
-    //       this.setState({ period: { end: !this.state.period.end } });
-    //       return;
-    //     }
-    //   }
-    // }
-    // if (index === 0) {
-    //   console.log('DAME!! index 0');
-    //   this.setState({
-    //     err: 'input starting date first!!!!',
-    //     period: { end: false }
-    //   });
-    //   return;
-    // }
-    // else {
-    //   console.log('ok index 0 ');
-    //   this.setState({ period: { end: !this.state.period.end } });
-    // }
-
-    // const index2 = dataFromServer.findIndex(
-    //   obj => obj.dateIDms >= this.props.dateIDms
-    // );
-    // for (let i = index2; i > 0; i--) {
-    //   if (dataFromServer[i].period && !dataFromServer[i].period.start) {
-    //     console.log('dame index');
-    //     this.setState({
-    //       err: 'input starting date first!!!!',
-    //       period: { end: false }
-    //     });
-    //     return;
-    //   } else {
-    //     console.log('ok index');
-    //     this.setState({ period: { end: !this.state.period.end } });
-    //   }
-    //   return;
-    // }
-  };
   render() {
     return (
       <div>
@@ -256,9 +144,9 @@ class Inputs extends React.Component {
               peripd:
               <input
                 type="checkbox"
-                checked={this.state.periodNew === true ? 'checked' : false}
+                checked={this.state.period === true ? 'checked' : false}
                 onChange={() => {
-                  this.setState({ periodNew: !this.state.periodNew });
+                  this.setState({ period: !this.state.period });
                 }}
               />
             </div>
@@ -266,24 +154,10 @@ class Inputs extends React.Component {
           <div>
             ovulation:start
             <input
-              checked={this.state.ovulation.start === true ? 'checked' : false}
-              type="radio"
-              name="ovulation"
-              onChange={e => {
-                this.setState({
-                  ovulation: { start: !this.state.ovulation.start }
-                });
-              }}
-            />
-            end
-            <input
-              checked={this.state.ovulation.end === true ? 'checked' : false}
-              type="radio"
-              name="ovulation"
-              onChange={e => {
-                this.setState({
-                  ovulation: { end: !this.state.ovulation.end }
-                });
+              type="checkbox"
+              checked={this.state.ovulation === true ? 'checked' : false}
+              onChange={() => {
+                this.setState({ ovulation: !this.state.ovulation });
               }}
             />
           </div>
@@ -354,10 +228,6 @@ class Inputs extends React.Component {
           <button style={{ color: 'red' }} onClick={this.saveToServer}>
             SAVE
           </button>
-          <p>symptoms:{this.state.symptoms}</p>
-          <p>note:{this.state.note}</p>
-          <p>moods:{this.state.moods}</p>
-          <p>temperature:{this.state.temperature}</p>
         </div>
       </div>
     );
@@ -373,3 +243,8 @@ export default Inputs;
 // }}
 // value={this.state.symptoms}
 // />
+
+// <p>symptoms:{this.state.symptoms}</p>
+// <p>note:{this.state.note}</p>
+// <p>moods:{this.state.moods}</p>
+// <p>temperature:{this.state.temperature}</p>
