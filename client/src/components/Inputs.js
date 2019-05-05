@@ -9,7 +9,6 @@ class Inputs extends React.Component {
   state = {
     date: '',
     dateIDms: '',
-
     month: '',
     day: '',
     year: '',

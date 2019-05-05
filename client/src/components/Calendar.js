@@ -134,7 +134,6 @@ class Calendar extends React.Component {
   renderCells = () => {
     this.averageCycle();
     this.averageLength();
-    console.log(this.state);
 
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
 
@@ -154,6 +153,7 @@ class Calendar extends React.Component {
     let medicineIcon;
     let symptomsIcon;
     let temperatureIcon;
+    let ovulationIcon;
     let messageToday;
 
     while (day <= endDate) {
@@ -171,6 +171,12 @@ class Calendar extends React.Component {
             if (obj.date === dateID) {
               if (obj.period) {
                 css.push('period-start');
+              }
+              if (obj.ovulation) {
+                css.push('ovulation');
+                ovulationIcon = (
+                  <img src="https://img.icons8.com/office/25/000000/sunny-side-up-eggs.png" />
+                );
               }
 
               if (obj.medicine) {
@@ -212,77 +218,28 @@ class Calendar extends React.Component {
 
         // ======生理予想日にも色をつける=====
 
-        const prevFist = parseInt(this.state.lastPeridoInfo[0].dateIDms);
-        const prevLast = parseInt(
-          this.state.lastPeridoInfo[this.state.lastPeridoInfo.length - 1]
-            .dateIDms
-        );
-        const gap = dateIDms - prevFist;
+        if (this.state.aveCycle !== '' && this.state.aveLength !== '') {
+          const prevFist = parseInt(this.state.lastPeridoInfo[0].dateIDms);
+          const prevLast = parseInt(
+            this.state.lastPeridoInfo[this.state.lastPeridoInfo.length - 1]
+              .dateIDms
+          );
+          const gap = dateIDms - prevFist;
 
-        if (gap % (this.state.averageCycle * 86400000) === 0) {
-          css.push('period-start');
+          if (dateIDms > prevFist) {
+            if (gap % (this.state.averageCycle * 86400000) === 0) {
+              css.push('period-estimation');
+            }
+            if (
+              (gap % (this.state.averageCycle * 86400000)) / 86400000 <=
+              this.state.aveLength
+            ) {
+              css.push('period-estimation');
+            }
+          }
         }
-        if (
-          (gap % (this.state.averageCycle * 86400000)) / 86400000 <=
-          this.state.aveLength
-        ) {
-          css.push('period-start');
-        }
-        // let r = gap - this.state.averageCycle * 86400000;
-        // r = r / 86400000;
-        // if (r >= 0 && r <= this.state.aveLength) {
-        //   css.push('period-start');
-        // }
-        // if ((gap - r) % (this.state.averageCycle * 86400000) === 0) {
-        //   css.push('period-start');
-        // }
 
-        // console.log((gap % (this.state.averageCycle * 86400000)) / 86400000);
-        // console.log(typeof dateIDms === 'number');
-        // if (dateIDms > prevFist + this.state.averageCycle * 86400000) {
-        //   console.log(day);
-        //   if (
-        //     (dateIDms - prevFist) % (this.state.averageCycle * 86400000) ===
-        //     0
-        //   ) {
-        //     css.push('period-start');
-        //   }
-        // }
-
-        // let x;
-        // console.log(
-        //   dateFns.addDays(prevFist, this.state.averageCycle * 86400000)
-        // );
-
-        // if (
-        //   dateIDms >
-        //   dateFns.addDays(prevFist, this.state.averageCycle * 86400000)
-        // ) {
-        //   if (gap % this.state.averageCycle === 0) {
-        //     css.push('period-start');
-        //   }
-
-        //   if (dateIDms - prevFist <= this.state.aveLength * 86400000) {
-        //     console.log('ok');
-        //     css.push('period-start');
-        //   }
-
-        // if (x >= 86400000 && x <= this.state.aveLength * 86400000) {
-        //   if ((gap - x) % this.state.averageCycle === 0) {
-        //     console.log('ok', day);
-        //   }
-        // }
-        //}
-
-        // (x >= 0 && x <= (this.state.aveLength - 1) * 86400000)
-        // if (x === 86400000 && (gap - x) % this.state.averageCycle === 0) {
-        //   css.push('period-start');
-        // }
-        // }
-
-        // A >= min && A <= max
-
-        // ======/生理予想日にも色をつける=====
+        // ===========
 
         if (!dateFns.isSameMonth(day, monthStart)) {
           css.push('disabled');
@@ -327,6 +284,7 @@ class Calendar extends React.Component {
             {symptomsIcon}
             {noteIcon}
             {temperatureIcon}
+            {ovulationIcon}
           </div>
         );
         messageToday = '';
@@ -335,6 +293,7 @@ class Calendar extends React.Component {
         symptomsIcon = '';
         noteIcon = '';
         temperatureIcon = '';
+        ovulationIcon = '';
         day = dateFns.addDays(day, 1);
       }
       rows.push(

@@ -27,10 +27,12 @@ class Chart extends React.Component {
     let eachDaysInMonth = dateFns.eachDay(monthStart, monthEnd);
     let chartData = [];
     let periodArr = '';
+    let ovulationArr = '';
     let temperatureArr = '';
 
     if (dataFromServer) {
       periodArr = dataFromServer.filter(data => data.period);
+      ovulationArr = dataFromServer.filter(data => data.ovulation);
       temperatureArr = dataFromServer.filter(data => data.temperature !== '');
     }
 
@@ -42,6 +44,8 @@ class Chart extends React.Component {
       for (let i = 0; i < periodArr.length; i++) {
         if (data.label === periodArr[i].date.slice(4, 10)) {
           chartData[index]['period'] = 38;
+          // console.log(chartData[index]['period']);
+          chartData[index]['color'] = 'rgba(255, 99, 132, 0.2)';
         }
       }
     });
@@ -53,11 +57,30 @@ class Chart extends React.Component {
         }
       }
     });
+
+    chartData.forEach((data, index) => {
+      for (let i = 0; i < ovulationArr.length; i++) {
+        if (data.label === ovulationArr[i].date.slice(4, 10)) {
+          chartData[index]['color'] = 'rgba(255, 206, 86, 0.2)';
+          chartData[index]['period'] = 38;
+        }
+      }
+    });
+    console.log(chartData);
     return chartData;
   };
 
   render() {
     const options = {
+      animation: {
+        duration: 0
+      },
+      legend: {
+        display: true,
+        labels: {
+          fontColor: '#000080'
+        }
+      },
       maintainAspectRatio: false,
       scales: {
         xAxes: [
@@ -69,7 +92,7 @@ class Chart extends React.Component {
           {
             ticks: {
               min: 35,
-              max: 38
+              max: 37.5
             }
           }
         ]
@@ -94,22 +117,24 @@ class Chart extends React.Component {
           label: 'Period',
           type: 'bar',
           data: this.getData().map(data => data.period),
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          hoverBackgroundColor: 'rgba(255, 99, 132, 0.2)'
+          backgroundColor: this.getData().map(data => data.color),
+          hoverBackgroundColor: this.getData().map(data => data.color)
         }
       ]
     };
 
     return (
       <div>
-        <button onClick={this.handlePrevMonth}>prev</button>
-        <button onClick={this.handleNextMonth}>next</button>
-        <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
+        <div style={{ display: 'flex', paddingLeft: '45%' }}>
+          <button onClick={this.handlePrevMonth}>←</button>
+          <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
+          <button onClick={this.handleNextMonth}>→</button>
+        </div>
+
         <div
           style={{
             width: '65%',
-            margin: '0 auto',
-            paddingTop: '100px'
+            margin: '0 auto'
           }}
         >
           <Bar data={data} width={400} height={400} options={options} />
