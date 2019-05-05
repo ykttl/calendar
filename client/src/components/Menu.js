@@ -1,10 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../Menu.css';
 
-class Header extends React.Component {
+class Menu extends React.Component {
   render() {
     return (
-      <nav>
+      <div className="menu">
+        <div className="lgoo">
+          <h1>Period Tracker</h1>
+        </div>
+
         <ul>
           <li>
             <Link to="/">Calendar</Link>
@@ -16,9 +21,9 @@ class Header extends React.Component {
             <Link to="/chart">Chart</Link>
           </li>
         </ul>
-      </nav>
+      </div>
     );
   }
 }
 
-export default Header;
+export default Menu;
