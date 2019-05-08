@@ -1,6 +1,7 @@
 import { Bar } from 'react-chartjs-2';
 import dateFns from 'date-fns';
 import React from 'react';
+import '../css/Chart.css';
 
 class Chart extends React.Component {
   state = {
@@ -72,15 +73,42 @@ class Chart extends React.Component {
 
   render() {
     const options = {
+      legend: {
+        display: false
+      },
+      // legendCallback: function(chart) {
+      //   return [1, 1, 1];
+      // },
+      // legendCallback: function(chart) {
+      //   var text = [];
+      //   text.push('<ul className="' + chart.id + '-legend">');
+      //   for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
+      //     text.push(
+      //       '<li><span style={{backgroundColor:' +
+      //         chart.data.datasets[0].backgroundColor[i] +
+      //         '}}></span>'
+      //     );
+      //     if (chart.data.labels[i]) {
+      //       text.push(
+      //         chart.data.labels[i] + chart.data.datasets[0].data[i] + '%'
+      //       );
+      //     }
+      //     text.push('</li>');
+      //   }
+      //   text.push('</ul>');
+      //   console.log(text.join(''));
+      //   return text.join('');
+      // },
+
       animation: {
         duration: 0
       },
-      legend: {
-        display: true,
-        labels: {
-          fontColor: '#000080'
-        }
-      },
+      // legend: {
+      //   display: true,
+      //   labels: {
+      //     fontColor: '#000080'
+      //   }
+      // },
       maintainAspectRatio: false,
       scales: {
         xAxes: [
@@ -124,13 +152,28 @@ class Chart extends React.Component {
     };
 
     return (
-      <div>
-        <div style={{ display: 'flex', paddingLeft: '45%' }}>
-          <button onClick={this.handlePrevMonth}>←</button>
+      <div className="container">
+        <div className="arrow-box">
+          <p onClick={this.handlePrevMonth}>
+            {' '}
+            <i class="material-icons arrow">arrow_back_ios</i>
+          </p>
           <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
-          <button onClick={this.handleNextMonth}>→</button>
+          <p onClick={this.handleNextMonth}>
+            <i class="material-icons arrow">arrow_forward_ios</i>
+          </p>
         </div>
-
+        <div className="legend">
+          <p>
+            <span>■</span> temperature
+          </p>
+          <p>
+            <span>■</span> period
+          </p>
+          <p>
+            <span>■</span> ovulation
+          </p>
+        </div>
         <div
           style={{
             width: '65%',

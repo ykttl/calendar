@@ -1,7 +1,7 @@
 import React from 'react';
 import Inputs from './Inputs';
-import '../App.css';
-import '../modal.css';
+import '../css/App.css';
+import '../css/modal.css';
 
 class Modal extends React.Component {
   render() {

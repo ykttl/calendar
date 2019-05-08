@@ -1,0 +1,17 @@
+.arrow {
+  cursor: pointer;
+}
+.container {
+  background: white;
+  border: 1px pink solid;
+  border-radius: 8px;
+}
+.arrow-box {
+  /* background: white; */
+  display: flex;
+  padding-left: 45%;
+}
+.legend {
+  display: flex;
+  justify-content: center;
+}

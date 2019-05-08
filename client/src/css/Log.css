@@ -1,0 +1,37 @@
+.container-1 {
+  display: flex;
+  justify-content: center;
+}
+.container-2 {
+  border: 1px pink solid;
+  border-radius: 8px;
+  display: flex;
+  /* margin: 50px auto; */
+  justify-content: center;
+  background: white;
+}
+
+.elapsed-day-num {
+  font-size: 30px;
+  color: pink;
+}
+.elapsed-days-box {
+  width: 30%;
+  background: white;
+  border: 1px pink solid;
+  border-radius: 8px;
+  /* background: pink; */
+}
+
+.average-box {
+  width: 30%;
+  background: white;
+  /* background: pink 1px; */
+  border: 1px pink solid;
+  border-radius: 8px;
+  margin: 10px;
+  /* justify-content: flex-start; */
+}
+.column {
+  padding: 0 15px;
+}

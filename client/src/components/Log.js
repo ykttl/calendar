@@ -1,6 +1,8 @@
 import React from 'react';
 import dateFns from 'date-fns';
+import '../css/Log.css';
 
+// 毎回date関数呼ぶんじゃなくてステートに保存するといいんじゃない
 class Log extends React.Component {
   getPeriodData() {
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
@@ -51,12 +53,17 @@ class Log extends React.Component {
 
     const latestDayOfPeriod = data[0][data[0].length - 1].dateIDms;
     if (latestDayOfPeriod === today) {
-      return 'During period now';
+      return <p>During period now</p>;
     }
 
     const elapsedDays = (today - firstDayOfPrevPeriod) / 86400000;
 
-    return `${elapsedDays} DAYS SINCE PREVIOUS PERIOD HAD STARTED`;
+    return (
+      <div>
+        <p>Since previous period</p>
+        <p className="elapsed-day-num">{elapsedDays} DAYS</p>
+      </div>
+    );
   };
 
   getDuration = () => {
@@ -64,8 +71,8 @@ class Log extends React.Component {
     if (data === null) return;
 
     return data.map(arr => {
-      const firstDay = arr[0].date;
-      const lastDay = arr[arr.length - 1].date;
+      const firstDay = arr[0].month + ' ' + arr[0].day;
+      const lastDay = arr[arr.length - 1].month + ' ' + arr[arr.length - 1].day;
       return (
         <p>
           {firstDay} 〜 {lastDay}
@@ -77,7 +84,7 @@ class Log extends React.Component {
   getLength = () => {
     const data = this.getPeriodData();
     if (data === null) return;
-    return data.map(period => <p>{period.length}days</p>);
+    return data.map(period => <p>{period.length} days</p>);
   };
 
   getCycle = () => {
@@ -97,7 +104,7 @@ class Log extends React.Component {
       }
     });
 
-    return listOfCycle.map(cycle => <p>cycle:{cycle}days</p>);
+    return listOfCycle.map(cycle => <p>{cycle} days</p>);
   };
 
   averageCycle = () => {
@@ -122,7 +129,7 @@ class Log extends React.Component {
     if (listOfCycle.length !== 0) {
       const sum = listOfCycle.reduce((a, b) => a + b);
       const average = Math.round(sum / listOfCycle.length);
-      return <p>Average Cycle：every {average} days</p>;
+      return <p>Cycle　length: {average} days</p>;
     }
   };
 
@@ -132,19 +139,31 @@ class Log extends React.Component {
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
-    return <p>Average length: for {average} days</p>;
+    return <p>Period length: {average} days</p>;
   };
 
   render() {
     return (
       <div>
-        <p>{this.getElapsedDays()}</p>
-        <div>{this.averageCycle()} </div>
-        <div>{this.averageLength()}</div>
-        <div style={{ display: 'flex' }}>
-          <div> {this.getDuration()}</div>
-          <div style={{ border: 'solid 2px' }}> {this.getLength()}</div>
-          <div> {this.getCycle()}</div>
+        <div className="container-1">
+          <div className="column elapsed-days-box">{this.getElapsedDays()}</div>
+          <div className="column average-box">
+            <p>Average</p>
+            <div>{this.averageCycle()} </div>
+            <div>{this.averageLength()}</div>
+          </div>
+        </div>
+
+        <div className="container-2">
+          <div className="column">
+            <p>Duration</p> {this.getDuration()}
+          </div>
+          <div className="column">
+            <p>Length</p> {this.getLength()}
+          </div>
+          <div className="column">
+            <p>Cycle</p> {this.getCycle()}
+          </div>
         </div>
       </div>
     );
