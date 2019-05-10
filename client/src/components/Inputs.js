@@ -1,10 +1,12 @@
 import React from 'react';
 import dateFns from 'date-fns';
+import { withFirebase } from './Firebase';
+
 let message = {
   periodEnd: null
 };
 var todayVAR;
-class Inputs extends React.Component {
+class InputsBase extends React.Component {
   data = [];
   state = {
     date: '',
@@ -24,6 +26,7 @@ class Inputs extends React.Component {
     period: false
   };
   componentDidUpdate(prevPro, prevState) {
+    console.log(this.props);
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
       return;
     this.setState({
@@ -110,6 +113,11 @@ class Inputs extends React.Component {
         console.log(this.data);
 
         localStorage.setItem('data', JSON.stringify(this.data));
+
+        // firebase //
+        // this.props.firebase.calendars().push({
+        //   text: 'test'
+        // });
       }
     );
   };
@@ -232,6 +240,8 @@ class Inputs extends React.Component {
     );
   }
 }
+
+const Inputs = withFirebase(InputsBase);
 
 export default Inputs;
 
