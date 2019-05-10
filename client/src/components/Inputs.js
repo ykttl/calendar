@@ -1,12 +1,12 @@
 import React from 'react';
 import dateFns from 'date-fns';
-import { withFirebase } from './Firebase';
+// import { withFirebase } from './Firebase';
 
 let message = {
   periodEnd: null
 };
 var todayVAR;
-class InputsBase extends React.Component {
+class Inputs extends React.Component {
   data = [];
   state = {
     date: '',
@@ -241,7 +241,7 @@ class InputsBase extends React.Component {
   }
 }
 
-const Inputs = withFirebase(InputsBase);
+// const Inputs = withFirebase(InputsBase);
 
 export default Inputs;
 
