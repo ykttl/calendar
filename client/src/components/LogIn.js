@@ -21,10 +21,15 @@ class LogIn extends React.Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then(authUser => {
+        console.log(authUser);
+        this.props.updateAuth(authUser);
+      })
       .then(() => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push('/log');
       })
+
       .catch(error => {
         this.setState({ error });
       });

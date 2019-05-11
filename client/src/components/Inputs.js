@@ -1,50 +1,42 @@
 import React from 'react';
 import dateFns from 'date-fns';
+import firebase from '../firebase';
 // import { withFirebase } from './Firebase';
 
-let message = {
-  periodEnd: null
+// let message = {
+//   periodEnd: null
+// };
+const initialState = {
+  date: '',
+  dateIDms: '',
+  month: '',
+  day: '',
+  year: '',
+  ovulation: false,
+  temperature: '',
+  moods: [],
+  symptoms: '',
+  medicine: false,
+  intercourse: false,
+  note: '',
+  err: '',
+  period: false
 };
+
 var todayVAR;
+
 class Inputs extends React.Component {
   data = [];
   state = {
-    date: '',
-    dateIDms: '',
-    month: '',
-    day: '',
-    year: '',
-    ovulation: false,
-    temperature: '',
-    moods: [],
-    symptoms: '',
-
-    medicine: false,
-    intercourse: false,
-    note: '',
-    err: '',
-    period: false
+    ...initialState
   };
+
   componentDidUpdate(prevPro, prevState) {
     console.log(this.props);
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
       return;
     this.setState({
-      date: '',
-      dateIDms: '',
-
-      month: '',
-      day: '',
-      year: '',
-      ovulation: false,
-      temperature: '',
-      moods: [],
-      symptoms: '',
-      medicine: false,
-      intercourse: false,
-      note: '',
-      err: '',
-      period: false
+      ...initialState
     });
     let dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) {
@@ -60,7 +52,6 @@ class Inputs extends React.Component {
       this.setState({
         date: this.props.dataID,
         dateIDms: this.props.dateIDms,
-
         month: this.props.dateID.slice(4, 7),
         day: this.props.dateID.slice(8, 10),
         year: this.props.dateID.slice(11, 15),
@@ -81,7 +72,6 @@ class Inputs extends React.Component {
       {
         date: this.props.dateID,
         dateIDms: this.props.dateIDms,
-
         month: this.props.dateID.slice(4, 7),
         day: this.props.dateID.slice(8, 10),
         year: this.props.dateID.slice(11, 15)
@@ -113,15 +103,37 @@ class Inputs extends React.Component {
         console.log(this.data);
 
         localStorage.setItem('data', JSON.stringify(this.data));
-
-        // firebase //
-        // this.props.firebase.calendars().push({
-        //   text: 'test'
-        // });
+        /////////////////////////
+        firebase.auth().onAuthStateChanged(authUser => {
+          if (authUser) {
+            console.log(authUser, 'authUser2');
+            console.log(this.data);
+            firebase
+              .database()
+              .ref('data/' + authUser.uid)
+              .set(this.data);
+          } else {
+            console.log('noooo user2');
+          }
+        });
       }
     );
   };
   componentDidMount() {
+    console.log('input');
+    firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        firebase
+          .database()
+          .ref('data/' + authUser.uid)
+          .on('value', snapshot => {
+            console.log(snapshot.val());
+          });
+      } else {
+        console.log('noooo user2');
+      }
+    });
+
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) return '';
     let today = new Date();

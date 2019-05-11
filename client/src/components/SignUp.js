@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
-
+import { withRouter } from 'react-router-dom';
 const INITIAL_STATE = {
   username: '',
   email: '',
@@ -21,8 +21,9 @@ class SignUp extends React.Component {
       .createUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
         console.log(authUser);
+        this.props.updateAuth(authUser);
         // Create a user in your Firebase realtime database
-        return firebase
+        firebase
           .database()
           .ref('users/' + authUser.user.uid)
           .set({
@@ -90,4 +91,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+export default withRouter(SignUp);
