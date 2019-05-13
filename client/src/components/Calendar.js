@@ -133,34 +133,50 @@ class Calendar extends React.Component {
   };
 
   getdata = async () => {
-    try {
-      const test = await firebase
-        .database()
-        .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
-        .once('value')
-        .then(snapshot => this.setState({ test: snapshot.val() }));
-    } catch (error) {
-      return 'error';
-    }
-  };
-  componentDidMount() {
-    this.getdata();
-  }
-
-  renderCells = () => {
-    // this.averageCycle();
-    // this.averageLength();
+    const test = await firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        firebase
+          .database()
+          .ref('data/' + authUser.uid)
+          .on('value', snapshot => {
+            this.setState({ test: snapshot.val().map(item => item) });
+          });
+      } else {
+        console.log('noooo user2');
+      }
+    });
+    // firebase.auth().onAuthStateChanged(authUser => {
+    //   if (authUser) {
+    //     console.log(authUser);
+    //   } else {
+    //     console.log('noooo user2');
+    //   }
+    // });
+    // console.log('a');
     // try {
     //   const test = await firebase
     //     .database()
     //     .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
-    //     .once('value')
-    //     .then(snapshot => [snapshot.val()]);
-
-    //   console.log(test, 'test');
+    //     .on('value', snapshot => console.log(snapshot.val()));
     // } catch (error) {
     //   return 'error';
     // }
+    // console.log(this.state.test);
+  };
+  componentDidMount() {
+    //this.getdata();
+  }
+  componentWillMount() {
+    this.getdata();
+  }
+  renderCells = () => {
+    // const test = await firebase
+    //   .database()
+    //   .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
+    //   .on('value', snapshot => {
+    //     this.setState({ test: snapshot.val().map(item => item) });
+    //   });
+
     if (this.state.test === '') return 'LOADING';
     //const dataFromServer = JSON.parse(localStorage.getItem('data'));
     const dataFromServer = this.state.test;
