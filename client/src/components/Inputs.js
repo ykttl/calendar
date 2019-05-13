@@ -119,20 +119,28 @@ class Inputs extends React.Component {
       }
     );
   };
-  componentDidMount() {
-    console.log('input');
-    firebase.auth().onAuthStateChanged(authUser => {
-      if (authUser) {
-        firebase
-          .database()
-          .ref('data/' + authUser.uid)
-          .on('value', snapshot => {
-            console.log(snapshot.val());
-          });
-      } else {
-        console.log('noooo user2');
-      }
-    });
+   componentDidMount() {
+    // console.log('input');
+    // firebase.auth().onAuthStateChanged(authUser => {
+    //   if (authUser) {
+    //     firebase
+    //       .database()
+    //       .ref('data/' + authUser.uid)
+    //       .on('value', snapshot => {
+    //         console.log(snapshot.val());
+    //       });
+    //   } else {
+    //     console.log('noooo user2');
+    //   }
+    // });
+
+    // const test = await firebase
+    //   .database()
+    //   .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
+    //   .once('value')
+    //   .then(snapshot => snapshot.val());
+
+    // console.log(test, 'test');
 
     const dataFromServer = JSON.parse(localStorage.getItem('data'));
     if (!dataFromServer) return '';

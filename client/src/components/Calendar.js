@@ -1,6 +1,6 @@
 // this calendar is made by referring to https://github.com/moodydev/react-calendar
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
-
+import firebase from '../firebase';
 import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
@@ -14,7 +14,8 @@ class Calendar extends React.Component {
     dateIDms: '',
     averageCycle: '',
     aveLength: '',
-    lastPeridoInfo: ''
+    lastPeridoInfo: '',
+    test: ''
   };
 
   renderHeader = () => {
@@ -131,12 +132,38 @@ class Calendar extends React.Component {
     this.state.aveLength = average;
   };
 
+  getdata = async () => {
+    try {
+      const test = await firebase
+        .database()
+        .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
+        .once('value')
+        .then(snapshot => this.setState({ test: snapshot.val() }));
+    } catch (error) {
+      return 'error';
+    }
+  };
+  componentDidMount() {
+    this.getdata();
+  }
+
   renderCells = () => {
-    this.averageCycle();
-    this.averageLength();
+    // this.averageCycle();
+    // this.averageLength();
+    // try {
+    //   const test = await firebase
+    //     .database()
+    //     .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
+    //     .once('value')
+    //     .then(snapshot => [snapshot.val()]);
 
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-
+    //   console.log(test, 'test');
+    // } catch (error) {
+    //   return 'error';
+    // }
+    if (this.state.test === '') return 'LOADING';
+    //const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    const dataFromServer = this.state.test;
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
