@@ -1,6 +1,7 @@
 import React from 'react';
 import SignUp from './SignUp';
 import LogIn from './LogIn';
+import '../css/Auth.css';
 
 //ここにステートつくって認証データ保存してわたす？コンテクスト？
 
@@ -18,9 +19,9 @@ class Auth extends React.Component {
   };
   render() {
     return (
-      <div>
-        <LogIn updateAuth={this.updateAuth} />
+      <div className="auth-container">
         <SignUp updateAuth={this.updateAuth} />
+        <LogIn updateAuth={this.updateAuth} />
       </div>
     );
   }

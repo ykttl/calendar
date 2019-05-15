@@ -1,17 +1,37 @@
-.arrow {
-  cursor: pointer;
+h3 {
+  margin: 15px 10px 10px 10px;
 }
-.container {
+
+.chart-container {
   background: white;
   border: 1px pink solid;
   border-radius: 8px;
 }
-.arrow-box {
-  /* background: white; */
-  display: flex;
-  padding-left: 45%;
+
+.chart-box {
+  width: 65%;
+  margin: 0 auto;
 }
+
+.arrow-box {
+  display: flex;
+  justify-content: center;
+}
+
+.arrow {
+  cursor: pointer;
+}
+
 .legend {
   display: flex;
   justify-content: center;
+}
+
+.legend-item {
+  margin: 5px;
+}
+
+.legend-color {
+  padding-right: 4px;
+  font-size: 20px;
 }

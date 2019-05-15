@@ -3,96 +3,48 @@ import { Link } from 'react-router-dom';
 import '../css/Menu.css';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
-import authContext from './Auth';
 
 class Menu extends React.Component {
+  state = { user: true };
+
   signOut = () => {
     firebase
       .auth()
       .signOut()
       .then(() => {
         this.props.history.push('/');
+        this.setState({ user: null });
       });
   };
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        console.log(user, 'user2');
-      } else {
-        console.log('noooo user2');
-      }
-    });
-  }
+
+  renderMenuItem = () => (
+    <ul>
+      <li>
+        <Link to="/calendar">Calendar</Link>
+      </li>
+      <li>
+        <Link to="/log">Log</Link>
+      </li>
+      <li>
+        <Link to="/chart">Chart</Link>
+      </li>
+      <li style={{ cursor: 'pointer' }}>
+        <a type="button" onClick={this.signOut}>
+          Sign-out
+        </a>
+      </li>
+    </ul>
+  );
+
   render() {
     return (
-      <ul>
-        <li>
-          <Link to="/calendar">Calendar</Link>
-        </li>
-        <li>
-          <Link to="/log">Log</Link>
-        </li>
-        <li>
-          <Link to="/chart">Chart</Link>
-        </li>
-        <button type="button" onClick={this.signOut}>
-          Sign Out
-        </button>
-      </ul>
+      <div className="menu">
+        <div className="lgoo">
+          <h1>Period Tracker</h1>
+        </div>
+        {this.state.user && this.renderMenuItem()}
+      </div>
     );
   }
 }
 export default withRouter(Menu);
-// import SignOutButton from './SignOut/index';
-
-// import { AuthUserContext } from './Session/index';
-
-// const Menu = () => (
-//   <div className="menu">
-//     <div className="lgoo">
-//       <h1>Period Tracker</h1>
-//     </div>
-//     <div>
-//       <AuthUserContext.Consumer>
-//         {authUser => (authUser ? <MenuAuth /> : <MenuNonAuth />)}
-//       </AuthUserContext.Consumer>
-//     </div>
-//   </div>
-// );
-
-// const MenuAuth = () => (
-//   <ul>
-//     <li>
-//       <Link to="/">Calendar</Link>
-//     </li>
-//     <li>
-//       <Link to="/log">Log</Link>
-//     </li>
-//     <li>
-//       <Link to="/chart">Chart</Link>
-//     </li>
-//     <li>
-//       <Link to="/account">Account</Link>
-//     </li>
-//     <li>
-//       <Link to="/signin">Sign-In</Link>
-//     </li>
-//     <li>
-//       <SignOutButton />
-//     </li>
-//   </ul>
-// );
-
-// const MenuNonAuth = () => (
-//   <ul>
-//     <li>
-//       <Link to="/">Calendar</Link>
-//     </li>
-//     <li>
-//       <Link to="/signup">Sign-Up</Link>
-//     </li>
-//     <li>
-//       <Link to="/signin">Sign-In</Link>
-//     </li>
-//   </ul>
-// );

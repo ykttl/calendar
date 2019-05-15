@@ -1,6 +1,8 @@
 import React from 'react';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
+import '../css/Auth.css';
+
 const INITIAL_STATE = {
   username: '',
   email: '',
@@ -53,39 +55,51 @@ class SignUp extends React.Component {
       username === '';
 
     return (
-      <div>
-        <input
-          name="username"
-          value={username}
-          onChange={this.onChange}
-          type="text"
-          placeholder="username"
-        />
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="email"
-        />
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="text"
-          placeholder="passwordOne"
-        />
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="text"
-          placeholder="passwordTwo"
-        />
-        <button disabled={isInvalid} onClick={this.onSubmit}>
-          Sign Up
-        </button>
-        {error && <p>{error.message}</p>}
+      <div className="signin-container">
+        <h2>Create Account</h2>
+        <div className="inputs-box">
+          <input
+            name="username"
+            value={username}
+            onChange={this.onChange}
+            type="text"
+            placeholder="username"
+            className="input"
+          />
+          <input
+            name="email"
+            value={email}
+            onChange={this.onChange}
+            type="text"
+            placeholder="email"
+            className="input"
+          />
+          <input
+            name="passwordOne"
+            value={passwordOne}
+            onChange={this.onChange}
+            type="text"
+            placeholder="password"
+            className="input"
+          />
+          <input
+            name="passwordTwo"
+            value={passwordTwo}
+            onChange={this.onChange}
+            type="text"
+            placeholder="confirm password"
+            className="input"
+          />
+          <button
+            disabled={isInvalid}
+            onClick={this.onSubmit}
+            className="btn signup-btn"
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {error && <p className="error-message">{error.message}</p>}
       </div>
     );
   }

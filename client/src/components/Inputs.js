@@ -120,19 +120,19 @@ class Inputs extends React.Component {
     );
   };
   componentDidMount() {
-    console.log('input');
-    firebase.auth().onAuthStateChanged(authUser => {
-      if (authUser) {
-        firebase
-          .database()
-          .ref('data/' + authUser.uid)
-          .on('value', snapshot => {
-            console.log(snapshot.val());
-          });
-      } else {
-        console.log('noooo user2');
-      }
-    });
+    // console.log('input');
+    // firebase.auth().onAuthStateChanged(authUser => {
+    //   if (authUser) {
+    //     firebase
+    //       .database()
+    //       .ref('data/' + authUser.uid)
+    //       .on('value', snapshot => {
+    //         console.log(snapshot.val());
+    //       });
+    //   } else {
+    //     console.log('noooo user2');
+    //   }
+    // });
 
     // const test = await firebase
     //   .database()

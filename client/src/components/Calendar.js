@@ -1,10 +1,11 @@
 // this calendar is made by referring to https://github.com/moodydev/react-calendar
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
-import firebase from '../firebase';
+
 import React from 'react';
 import dateFns from 'date-fns';
 import Modal from './Modal';
-
+import firebase from '../firebase';
+import loading from '../loading.gif';
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
@@ -15,9 +16,29 @@ class Calendar extends React.Component {
     averageCycle: '',
     aveLength: '',
     lastPeridoInfo: '',
-    test: ''
+    dataFromServer: '',
+    listOfPeriods: ''
+  };
+  getDataFromServer = async () => {
+    // firebase realtime database 変更すると勝手に同期されてるっぽいぞ！？
+
+    const data = await firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        firebase
+          .database()
+          .ref('data/' + authUser.uid)
+          .on('value', snapshot => {
+            this.setState({ dataFromServer: snapshot.val().map(item => item) });
+          });
+      } else {
+        console.log('no data from server, calendar.js');
+      }
+    });
   };
 
+  componentWillMount() {
+    this.getDataFromServer();
+  }
   renderHeader = () => {
     const dateFormat = 'MMMM YYYY';
 
@@ -54,8 +75,10 @@ class Calendar extends React.Component {
   };
 
   getPeriodData() {
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) return null;
+    console.log('get period');
+    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    const dataFromServer = this.state.dataFromServer;
+    if (dataFromServer.length === 0) return;
 
     let today = new Date();
     today = today.toString().slice(0, 15);
@@ -92,16 +115,17 @@ class Calendar extends React.Component {
 
     const lastPeridoInfo = listOfPeriods[listOfPeriods.length - 1];
     this.state.lastPeridoInfo = lastPeridoInfo;
-
-    return listOfPeriods.reverse();
+    this.state.listOfPeriods = listOfPeriods.reverse();
+    this.averageCycle();
+    this.averageLength();
+    // return listOfPeriods.reverse();
   }
   averageCycle = () => {
-    const data = this.getPeriodData();
-    if (data === null) return;
+    const data = this.state.listOfPeriods;
+    if (data.length === 0) return;
 
     let listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
-
       if (prevPeriod) {
         const cycle = Math.round(
           (period[0].dateIDms - prevPeriod[0].dateIDms) / 86400000
@@ -118,68 +142,25 @@ class Calendar extends React.Component {
       const sum = listOfCycle.reduce((a, b) => a + b);
       const average = Math.round(sum / listOfCycle.length);
       this.state.averageCycle = average;
-      // console.log(average);
-      // return <p>Average Cycle：every {average} days</p>;
     }
   };
 
   averageLength = () => {
-    const data = this.getPeriodData();
-    if (data === null) return;
+    const data = this.state.listOfPeriods;
+    if (data.length === 0) return;
+
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
     this.state.aveLength = average;
   };
 
-  getdata = async () => {
-    const test = await firebase.auth().onAuthStateChanged(authUser => {
-      if (authUser) {
-        firebase
-          .database()
-          .ref('data/' + authUser.uid)
-          .on('value', snapshot => {
-            this.setState({ test: snapshot.val().map(item => item) });
-          });
-      } else {
-        console.log('noooo user2');
-      }
-    });
-    // firebase.auth().onAuthStateChanged(authUser => {
-    //   if (authUser) {
-    //     console.log(authUser);
-    //   } else {
-    //     console.log('noooo user2');
-    //   }
-    // });
-    // console.log('a');
-    // try {
-    //   const test = await firebase
-    //     .database()
-    //     .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
-    //     .on('value', snapshot => console.log(snapshot.val()));
-    // } catch (error) {
-    //   return 'error';
-    // }
-    // console.log(this.state.test);
-  };
-  componentDidMount() {
-    //this.getdata();
-  }
-  componentWillMount() {
-    this.getdata();
-  }
   renderCells = () => {
-    // const test = await firebase
-    //   .database()
-    //   .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
-    //   .on('value', snapshot => {
-    //     this.setState({ test: snapshot.val().map(item => item) });
-    //   });
+    this.getPeriodData();
 
-    if (this.state.test === '') return 'LOADING';
+    if (this.state.dataFromServer === '') return <img src={loading} />;
     //const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    const dataFromServer = this.state.test;
+    const dataFromServer = this.state.dataFromServer;
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -310,12 +291,7 @@ class Calendar extends React.Component {
             key={dateID}
             id={dateID}
             onClick={() =>
-              this.onDateClick(
-                dateFns.parse(cloneDay),
-                dateID,
-                dateIDms
-                // controllPeriodInput
-              )
+              this.onDateClick(dateFns.parse(cloneDay), dateID, dateIDms)
             }
           >
             <span className="number">{formattedDate}</span>

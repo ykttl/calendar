@@ -2,27 +2,63 @@ import { Bar } from 'react-chartjs-2';
 import dateFns from 'date-fns';
 import React from 'react';
 import '../css/Chart.css';
-
+import firebase from '../firebase';
+import loading from '../loading.gif';
 class Chart extends React.Component {
   state = {
-    currentMonth: new Date()
+    currentMonth: new Date(),
+    dataFromServer: '',
+    chartData: []
   };
-
-  handlePrevMonth = () => {
-    this.setState({
-      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+  getDataFromServer = async () => {
+    const data = await firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        firebase
+          .database()
+          .ref('data/' + authUser.uid)
+          .on('value', snapshot => {
+            this.setState(
+              {
+                dataFromServer: snapshot.val().map(item => item)
+              },
+              () => {
+                this.getChartData();
+              }
+            );
+          });
+      } else {
+        console.log('no data from server, calendar.js');
+      }
     });
+  };
+  componentWillMount() {
+    this.getDataFromServer();
+  }
+  handlePrevMonth = () => {
+    this.setState(
+      {
+        currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+      },
+      () => {
+        this.getChartData();
+      }
+    );
   };
 
   handleNextMonth = () => {
-    this.setState({
-      currentMonth: dateFns.subMonths(this.state.currentMonth, -1)
-    });
+    this.setState(
+      {
+        currentMonth: dateFns.subMonths(this.state.currentMonth, -1)
+      },
+      () => {
+        this.getChartData();
+      }
+    );
   };
 
-  getData = () => {
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    const { currentMonth } = this.state;
+  getChartData = () => {
+    const dataFromServer = this.state.dataFromServer;
+    const currentMonth = this.state.currentMonth;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
     let eachDaysInMonth = dateFns.eachDay(monthStart, monthEnd);
@@ -67,48 +103,56 @@ class Chart extends React.Component {
         }
       }
     });
-    console.log(chartData);
-    return chartData;
-  };
 
+    this.setState({ chartData });
+  };
+  renderLegend = () => (
+    <div className="legend">
+      <p className="legend-item">
+        <span style={{ color: 'rgb(255, 99, 132)' }} className="legend-color">
+          ■
+        </span>
+        temperature
+      </p>
+      <p className="legend-item">
+        <span
+          style={{ color: 'rgba(255, 99, 132, 0.2)' }}
+          className="legend-color"
+        >
+          ■
+        </span>
+        period
+      </p>
+      <p className="legend-item">
+        <span
+          style={{ color: 'rgba(255, 206, 86, 0.2)' }}
+          className="legend-color"
+        >
+          ■
+        </span>
+        ovulation
+      </p>
+    </div>
+  );
+  renderArrows = () => (
+    <div className="arrow-box">
+      <p onClick={this.handlePrevMonth} className="arrow">
+        <i class="material-icons arrow">keyboard_arrow_left</i>
+      </p>
+      <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
+      <p onClick={this.handleNextMonth} className="arrow">
+        <i class="material-icons arrow"> keyboard_arrow_right</i>
+      </p>
+    </div>
+  );
   render() {
     const options = {
       legend: {
         display: false
       },
-      // legendCallback: function(chart) {
-      //   return [1, 1, 1];
-      // },
-      // legendCallback: function(chart) {
-      //   var text = [];
-      //   text.push('<ul className="' + chart.id + '-legend">');
-      //   for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
-      //     text.push(
-      //       '<li><span style={{backgroundColor:' +
-      //         chart.data.datasets[0].backgroundColor[i] +
-      //         '}}></span>'
-      //     );
-      //     if (chart.data.labels[i]) {
-      //       text.push(
-      //         chart.data.labels[i] + chart.data.datasets[0].data[i] + '%'
-      //       );
-      //     }
-      //     text.push('</li>');
-      //   }
-      //   text.push('</ul>');
-      //   console.log(text.join(''));
-      //   return text.join('');
-      // },
-
       animation: {
         duration: 0
       },
-      // legend: {
-      //   display: true,
-      //   labels: {
-      //     fontColor: '#000080'
-      //   }
-      // },
       maintainAspectRatio: false,
       scales: {
         xAxes: [
@@ -130,12 +174,12 @@ class Chart extends React.Component {
       }
     };
     const data = {
-      labels: this.getData().map(data => data.label),
+      labels: this.state.chartData.map(data => data.label),
       datasets: [
         {
           label: 'Temperature',
           type: 'line',
-          data: this.getData().map(data => data.temperature),
+          data: this.state.chartData.map(data => data.temperature),
           backgroundColor: ['rgba(255, 99, 132, 0.2)'],
           borderColor: 'rgb(255, 99, 132)',
           fill: false,
@@ -144,44 +188,26 @@ class Chart extends React.Component {
         {
           label: 'Period',
           type: 'bar',
-          data: this.getData().map(data => data.period),
-          backgroundColor: this.getData().map(data => data.color),
-          hoverBackgroundColor: this.getData().map(data => data.color)
+          data: this.state.chartData.map(data => data.period),
+          backgroundColor: this.state.chartData.map(data => data.color),
+          hoverBackgroundColor: this.state.chartData.map(data => data.color)
         }
       ]
     };
 
     return (
-      <div className="container">
-        <div className="arrow-box">
-          <p onClick={this.handlePrevMonth}>
-            {' '}
-            <i class="material-icons arrow">arrow_back_ios</i>
-          </p>
-          <h3>{dateFns.format(this.state.currentMonth, 'MMM YYYY')}</h3>
-          <p onClick={this.handleNextMonth}>
-            <i class="material-icons arrow">arrow_forward_ios</i>
-          </p>
-        </div>
-        <div className="legend">
-          <p>
-            <span>■</span> temperature
-          </p>
-          <p>
-            <span>■</span> period
-          </p>
-          <p>
-            <span>■</span> ovulation
-          </p>
-        </div>
-        <div
-          style={{
-            width: '65%',
-            margin: '0 auto'
-          }}
-        >
-          <Bar data={data} width={400} height={400} options={options} />
-        </div>
+      <div>
+        {this.state.chartData.length === 0 ? (
+          <img src={loading} />
+        ) : (
+          <div className="chart-container">
+            {this.renderArrows()}
+            {this.renderLegend()}
+            <div className="chart-box">
+              <Bar data={data} width={400} height={400} options={options} />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
