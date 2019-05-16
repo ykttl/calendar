@@ -1,0 +1,22 @@
+.inputs-container {
+  /* text-align: left; */
+  width: 70%;
+  border: 3px solid red;
+  margin: 0 auto;
+}
+.item-container {
+  border: 3px solid red;
+  display: flex;
+}
+
+.category-box {
+  text-align: left;
+  /* border: 10px solid red; */
+}
+.input-box {
+  /* border: 10px solid red; */
+  /* text-align: right; */
+  /* margin: 0 auto; */
+  margin: 0px 0px 0px auto;
+  /* border: 10px solid red; */
+}

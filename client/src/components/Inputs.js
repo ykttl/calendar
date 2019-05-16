@@ -1,6 +1,7 @@
 import React from 'react';
 import dateFns from 'date-fns';
 import firebase from '../firebase';
+import '../css/Inputs.css';
 // import { withFirebase } from './Firebase';
 
 // let message = {
@@ -19,7 +20,7 @@ const initialState = {
   medicine: false,
   intercourse: false,
   note: '',
-  err: '',
+
   period: false
 };
 
@@ -106,8 +107,6 @@ class Inputs extends React.Component {
         /////////////////////////
         firebase.auth().onAuthStateChanged(authUser => {
           if (authUser) {
-            console.log(authUser, 'authUser2');
-            console.log(this.data);
             firebase
               .database()
               .ref('data/' + authUser.uid)
@@ -142,8 +141,8 @@ class Inputs extends React.Component {
 
     // console.log(test, 'test');
 
-    const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) return '';
+    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
+    // if (!dataFromServer) return '';
     let today = new Date();
     today = today.toString().slice(0, 15);
     today = dateFns.format(today, 'x');
@@ -153,13 +152,15 @@ class Inputs extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="inputs-container">
         <div>
-          <p>{this.state.err !== '' && this.state.err}</p>
-
           {this.props.dateIDms > todayVAR ? (
-            <div>
-              <strike>period</strike>
+            <div className="item-container">
+              <div className="category-box">
+                <img src="https://img.icons8.com/color/25/000000/drop-of-blood.png" />
+                <strike>period</strike>
+              </div>
+
               <input
                 disabled
                 type="checkbox"
@@ -167,90 +168,129 @@ class Inputs extends React.Component {
               />
             </div>
           ) : (
-            <div>
-              peripd:
+            <div className="item-container">
+              <div className="category-box">
+                <img src="https://img.icons8.com/color/25/000000/drop-of-blood.png" />
+                peripd
+              </div>
+              <div className="input-box">
+                <input
+                  type="checkbox"
+                  checked={this.state.period === true ? 'checked' : false}
+                  onChange={() => {
+                    this.setState({ period: !this.state.period });
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/office/25/000000/sunny-side-up-eggs.png" />
+              ovulation
+            </div>
+            <div className="input-box">
               <input
                 type="checkbox"
-                checked={this.state.period === true ? 'checked' : false}
+                checked={this.state.ovulation === true ? 'checked' : false}
                 onChange={() => {
-                  this.setState({ period: !this.state.period });
+                  this.setState({ ovulation: !this.state.ovulation });
                 }}
               />
             </div>
-          )}
-          <div>
-            ovulation:start
-            <input
-              type="checkbox"
-              checked={this.state.ovulation === true ? 'checked' : false}
-              onChange={() => {
-                this.setState({ ovulation: !this.state.ovulation });
-              }}
-            />
           </div>
-          <div>
-            Temperature:
-            <input
-              type="text"
-              onChange={e => {
-                this.setState({ temperature: e.target.value });
-              }}
-              value={this.state.temperature}
-            />
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/office/25/000000/thermometer.png" />
+              Temperature:
+            </div>
+            <div className="input-box">
+              <input
+                type="text"
+                onChange={e => {
+                  this.setState({ temperature: e.target.value });
+                }}
+                value={this.state.temperature}
+              />
+            </div>
           </div>
-          <div>
-            any symptoms?
-            <select
-              onChange={e => {
-                this.setState({ symptoms: e.target.value });
-              }}
-              value={this.state.symptoms}
-            >
-              <option value="">-</option>
-              <option value="headache">headache</option>
-              <option value="crump">crump</option>
-              <option value="heavy">heavy</option>
-            </select>
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/color/25/000000/question.png" />
+              any symptoms?
+            </div>
+            <div className="input-box">
+              <select
+                onChange={e => {
+                  this.setState({ symptoms: e.target.value });
+                }}
+                value={this.state.symptoms}
+              >
+                <option value="">-</option>
+                <option value="headache">headache</option>
+                <option value="crump">crump</option>
+                <option value="heavy">heavy</option>
+              </select>
+            </div>
           </div>
-          <div>
-            Took any medicine?
-            <input
-              type="checkbox"
-              checked={this.state.medicine === true ? 'checked' : false}
-              onChange={() => {
-                this.setState({ medicine: !this.state.medicine });
-              }}
-            />
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
+              Took any medicine?
+            </div>
+            <div className="input-box">
+              <input
+                type="checkbox"
+                checked={this.state.medicine === true ? 'checked' : false}
+                onChange={() => {
+                  this.setState({ medicine: !this.state.medicine });
+                }}
+              />
+            </div>
           </div>
-          <div>
-            intercourse?
-            <input
-              type="checkbox"
-              checked={this.state.intercourse === true ? 'checked' : false}
-              onChange={() => {
-                this.setState({ intercourse: !this.state.intercourse });
-              }}
-            />
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/office/25/000000/hearts.png" />
+              intercourse?
+            </div>
+            <div className="input-box">
+              <input
+                type="checkbox"
+                checked={this.state.intercourse === true ? 'checked' : false}
+                onChange={() => {
+                  this.setState({ intercourse: !this.state.intercourse });
+                }}
+              />
+            </div>
           </div>
-          <div>
-            moods:
-            <input
-              type="text"
-              onChange={e => {
-                this.setState({ moods: e.target.value });
-              }}
-              value={this.state.moods}
-            />
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
+              moods:
+            </div>
+            <div className="input-box">
+              <input
+                type="text"
+                onChange={e => {
+                  this.setState({ moods: e.target.value });
+                }}
+                value={this.state.moods}
+              />
+            </div>
           </div>
-          <div>
-            Note:
-            <input
-              type="text"
-              onChange={e => {
-                this.setState({ note: e.target.value });
-              }}
-              value={this.state.note}
-            />
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/ios/25/000000/note.png" />
+              Note:
+            </div>
+            <div className="input-box">
+              <textarea
+                onChange={e => {
+                  this.setState({ note: e.target.value });
+                }}
+                value={this.state.note}
+              />
+            </div>
           </div>
           <button style={{ color: 'red' }} onClick={this.saveToServer}>
             SAVE
