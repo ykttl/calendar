@@ -5,17 +5,14 @@ import Log from './components/Log';
 import Menu from './components/Menu';
 import Chart from './components/Chart';
 import Auth from './components/Auth';
-
 import './css/App.css';
+import './css/Calendar.css';
 
 const App = () => (
-  <div
-    className="App"
-    style={{ width: '70%', margin: '0 auto', textAlign: 'center' }}
-  >
+  <div className="app-container">
     <BrowserRouter>
       <Menu />
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="routes-container">
         <Route key={0} exact path="/" component={Auth} />
         <Route key={1} exact path="/calendar" component={Calendar} />
         <Route key={2} exact path="/log" component={Log} />

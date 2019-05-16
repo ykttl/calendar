@@ -55,7 +55,7 @@ class SignUp extends React.Component {
       username === '';
 
     return (
-      <div className="signin-container">
+      <div className="signup-container">
         <h2>Create Account</h2>
         <div className="inputs-box">
           <input

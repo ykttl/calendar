@@ -1,6 +1,6 @@
 import React from 'react';
 import Inputs from './Inputs';
-import '../css/App.css';
+import '../css/Calendar.css';
 import '../css/modal.css';
 
 class Modal extends React.Component {

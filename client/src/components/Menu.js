@@ -23,7 +23,10 @@ class Menu extends React.Component {
     }
   }
   componentWillMount() {
-    this.setState({ user: null });
+    // to hide menu in login page
+    if (this.props.location.pathname === '/') {
+      this.setState({ user: null });
+    }
   }
 
   renderMenuItem = () => (

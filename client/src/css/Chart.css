@@ -6,6 +6,8 @@ h3 {
   background: white;
   border: 1px pink solid;
   border-radius: 8px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .chart-box {
@@ -34,4 +36,7 @@ h3 {
 .legend-color {
   padding-right: 4px;
   font-size: 20px;
+}
+
+@media only screen and (max-width: 600px) {
 }

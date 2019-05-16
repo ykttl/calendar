@@ -217,14 +217,18 @@ class Log extends React.Component {
             </div>
 
             <div className="container-2">
-              <div className="column">
-                <p>Duration</p> {this.getDuration()}
-              </div>
-              <div className="column">
-                <p>Length</p> {this.getLength()}
-              </div>
-              <div className="column">
-                <p>Cycle</p> {this.getCycle()}
+              <p>History</p>
+
+              <div className="column-box">
+                <div className="column">
+                  <p>Duration</p> {this.getDuration()}
+                </div>
+                <div className="column">
+                  <p>Length</p> {this.getLength()}
+                </div>
+                <div className="column">
+                  <p>Cycle</p> {this.getCycle()}
+                </div>
               </div>
             </div>
           </div>

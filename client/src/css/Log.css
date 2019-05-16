@@ -10,14 +10,18 @@
 .container-2 {
   border: 1px pink solid;
   border-radius: 8px;
-  display: flex;
-  /* margin: 50px auto; */
-  justify-content: center;
+
   background: white;
   width: 81.5%;
   margin: 0 auto;
   margin-top: 5px;
   /* margin-left: 5px; */
+}
+
+.column-box {
+  display: flex;
+  /* margin: 50px auto; */
+  justify-content: center;
 }
 
 .elapsed-day-num {
@@ -47,4 +51,26 @@
 }
 .column {
   padding: 0 15px;
+}
+
+@media only screen and (max-width: 600px) {
+  .container-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .elapsed-day-num {
+    margin: 20px;
+  }
+
+  .elapsed-days-box {
+    width: 100%;
+  }
+  .average-box {
+    width: 100%;
+  }
+
+  .container-2 {
+    width: 100%;
+  }
 }

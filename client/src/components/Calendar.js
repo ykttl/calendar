@@ -6,6 +6,7 @@ import dateFns from 'date-fns';
 import Modal from './Modal';
 import firebase from '../firebase';
 import loading from '../loading.gif';
+
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
