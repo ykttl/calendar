@@ -2,11 +2,7 @@ import React from 'react';
 import dateFns from 'date-fns';
 import firebase from '../firebase';
 import '../css/Inputs.css';
-// import { withFirebase } from './Firebase';
 
-// let message = {
-//   periodEnd: null
-// };
 const initialState = {
   date: '',
   dateIDms: '',
@@ -15,7 +11,7 @@ const initialState = {
   year: '',
   ovulation: false,
   temperature: '',
-  moods: [],
+  moods: '',
   symptoms: '',
   medicine: false,
   intercourse: false,
@@ -24,7 +20,7 @@ const initialState = {
   period: false
 };
 
-var todayVAR;
+var today;
 
 class Inputs extends React.Component {
   data = [];
@@ -32,40 +28,50 @@ class Inputs extends React.Component {
     ...initialState
   };
 
-  componentDidUpdate(prevPro, prevState) {
-    console.log(this.props);
+  async componentDidUpdate(prevPro, prevState) {
     if (prevPro.dateID === this.props.dateID && prevState !== this.state)
       return;
+
     this.setState({
       ...initialState
     });
-    let dataFromServer = JSON.parse(localStorage.getItem('data'));
-    if (!dataFromServer) {
-      return [];
-    }
 
-    this.data = [...dataFromServer];
+    const data = await firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        firebase
+          .database()
+          .ref('data/' + authUser.uid)
+          .on('value', snapshot => {
+            let dataFromServer = snapshot.val();
+            if (!dataFromServer) {
+              return [];
+            }
 
-    const theData = dataFromServer.find(
-      item => item.date === this.props.dateID
-    );
-    if (theData) {
-      this.setState({
-        date: this.props.dataID,
-        dateIDms: this.props.dateIDms,
-        month: this.props.dateID.slice(4, 7),
-        day: this.props.dateID.slice(8, 10),
-        year: this.props.dateID.slice(11, 15),
-        temperature: theData.temperature,
-        moods: theData.moods,
-        symptoms: theData.symptoms,
-        medicine: theData.medicine,
-        intercourse: theData.intercourse,
-        note: theData.note,
-        period: theData.period,
-        ovulation: theData.ovulation
-      });
-    }
+            this.data = [...dataFromServer];
+
+            const theData = dataFromServer.find(
+              item => item.date === this.props.dateID
+            );
+            if (theData) {
+              this.setState({
+                date: this.props.dataID,
+                dateIDms: this.props.dateIDms,
+                month: this.props.dateID.slice(4, 7),
+                day: this.props.dateID.slice(8, 10),
+                year: this.props.dateID.slice(11, 15),
+                temperature: theData.temperature,
+                moods: theData.moods,
+                symptoms: theData.symptoms,
+                medicine: theData.medicine,
+                intercourse: theData.intercourse,
+                note: theData.note,
+                period: theData.period,
+                ovulation: theData.ovulation
+              });
+            }
+          });
+      }
+    });
   }
 
   saveToServer = () => {
@@ -100,11 +106,7 @@ class Inputs extends React.Component {
         }
 
         this.data.sort(compare);
-        // this.data.sort();
-        console.log(this.data);
 
-        localStorage.setItem('data', JSON.stringify(this.data));
-        /////////////////////////
         firebase.auth().onAuthStateChanged(authUser => {
           if (authUser) {
             firebase
@@ -118,60 +120,40 @@ class Inputs extends React.Component {
       }
     );
   };
+
   componentDidMount() {
-    // console.log('input');
-    // firebase.auth().onAuthStateChanged(authUser => {
-    //   if (authUser) {
-    //     firebase
-    //       .database()
-    //       .ref('data/' + authUser.uid)
-    //       .on('value', snapshot => {
-    //         console.log(snapshot.val());
-    //       });
-    //   } else {
-    //     console.log('noooo user2');
-    //   }
-    // });
-
-    // const test = await firebase
-    //   .database()
-    //   .ref('data/' + 'I7X6z1dcfhaW30Z0wOtv9WNXMSE3')
-    //   .once('value')
-    //   .then(snapshot => snapshot.val());
-
-    // console.log(test, 'test');
-
-    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
-    // if (!dataFromServer) return '';
-    let today = new Date();
-    today = today.toString().slice(0, 15);
-    today = dateFns.format(today, 'x');
-
-    todayVAR = today;
+    console.log(this.props.dateID, 'mounrZ!');
+    let now = new Date();
+    now = now.toString().slice(0, 15);
+    now = dateFns.format(now, 'x');
+    today = now;
   }
 
   render() {
     return (
       <div className="inputs-container">
         <div>
-          {this.props.dateIDms > todayVAR ? (
+          {this.props.dateIDms > today ? (
             <div className="item-container">
               <div className="category-box">
                 <img src="https://img.icons8.com/color/25/000000/drop-of-blood.png" />
-                <strike>period</strike>
+                <strike>
+                  <span>Period</span>
+                </strike>
               </div>
-
-              <input
-                disabled
-                type="checkbox"
-                style={{ cursor: 'not-allowed' }}
-              />
+              <div className="input-box">
+                <input
+                  disabled
+                  type="checkbox"
+                  style={{ cursor: 'not-allowed' }}
+                />
+              </div>
             </div>
           ) : (
             <div className="item-container">
               <div className="category-box">
                 <img src="https://img.icons8.com/color/25/000000/drop-of-blood.png" />
-                peripd
+                <span>Period</span>
               </div>
               <div className="input-box">
                 <input
@@ -187,7 +169,7 @@ class Inputs extends React.Component {
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/office/25/000000/sunny-side-up-eggs.png" />
-              ovulation
+              <span>Ovulation</span>
             </div>
             <div className="input-box">
               <input
@@ -202,7 +184,7 @@ class Inputs extends React.Component {
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/office/25/000000/thermometer.png" />
-              Temperature:
+              <span>Temperature</span>
             </div>
             <div className="input-box">
               <input
@@ -217,7 +199,7 @@ class Inputs extends React.Component {
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/color/25/000000/question.png" />
-              any symptoms?
+              <span>Symptoms</span>
             </div>
             <div className="input-box">
               <select
@@ -227,16 +209,18 @@ class Inputs extends React.Component {
                 value={this.state.symptoms}
               >
                 <option value="">-</option>
-                <option value="headache">headache</option>
-                <option value="crump">crump</option>
-                <option value="heavy">heavy</option>
+                <option value="Headache">Headache</option>
+                <option value="Anemia">Anemia</option>
+                <option value="Cramps">Cramps</option>
+                <option value="Spotting">Spotting</option>
+                <option value="Sore Breasts">Sore Breasts</option>
               </select>
             </div>
           </div>
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
-              Took any medicine?
+              <span>Medicine</span>
             </div>
             <div className="input-box">
               <input
@@ -251,7 +235,7 @@ class Inputs extends React.Component {
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/office/25/000000/hearts.png" />
-              intercourse?
+              <span>Intercourse</span>
             </div>
             <div className="input-box">
               <input
@@ -266,22 +250,32 @@ class Inputs extends React.Component {
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
-              moods:
+              <span>Moods</span>
             </div>
             <div className="input-box">
-              <input
-                type="text"
+              <select
                 onChange={e => {
                   this.setState({ moods: e.target.value });
                 }}
                 value={this.state.moods}
-              />
+              >
+                <option value="">-</option>
+                <option value="Happy">Happy</option>
+                <option value="Relaxed">Relaxed</option>
+                <option value="Motivated">Motivated</option>
+                <option value="Normal">Normal</option>
+                <option value="Depressed">Depressed</option>
+                <option value="Anxious">Anxious</option>
+                <option value="Sad">Sad</option>
+                <option value="Irritated">Irritated</option>
+                <option value="Slow">Slow</option>
+              </select>
             </div>
           </div>
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/ios/25/000000/note.png" />
-              Note:
+              <span>Note</span>
             </div>
             <div className="input-box">
               <textarea
@@ -292,7 +286,7 @@ class Inputs extends React.Component {
               />
             </div>
           </div>
-          <button style={{ color: 'red' }} onClick={this.saveToServer}>
+          <button onClick={this.saveToServer} className="save-btn">
             SAVE
           </button>
         </div>
@@ -317,3 +311,81 @@ export default Inputs;
 // <p>note:{this.state.note}</p>
 // <p>moods:{this.state.moods}</p>
 // <p>temperature:{this.state.temperature}</p>
+
+// const data = await firebase.auth().onAuthStateChanged(authUser => {
+//   if (authUser) {
+//     firebase
+//       .database()
+//       .ref('data/' + authUser.uid)
+//       .on('value', snapshot => {
+//         if (snapshot.val() === null) {
+//           return [];
+//         } else {
+//           this.data = [...snapshot.val()];
+//           const theData = snapshot
+//             .val()
+//             .map(item => item.date === this.props.dateID);
+//           console.log(snapshot.val());
+//           console.log(this.props.dateID);
+//           console.log(theData);
+//           if (theData) {
+//             this.setState({
+//               date: this.props.dataID,
+//               dateIDms: this.props.dateIDms,
+//               month: this.props.dateID.slice(4, 7),
+//               day: this.props.dateID.slice(8, 10),
+//               year: this.props.dateID.slice(11, 15),
+//               temperature: theData.temperature,
+//               moods: theData.moods,
+//               symptoms: theData.symptoms,
+//               medicine: theData.medicine,
+//               intercourse: theData.intercourse,
+//               note: theData.note,
+//               period: theData.period,
+//               ovulation: theData.ovulation
+//             });
+//           }
+//         }
+//       });
+//   }
+// });
+
+// getDataFromServer = async () => {
+//   const data = await firebase.auth().onAuthStateChanged(authUser => {
+//     if (authUser) {
+//       firebase
+//         .database()
+//         .ref('data/' + authUser.uid)
+//         .on('value', snapshot => {
+//           if (snapshot.val() === null) {
+//             this.setState({
+//               ...initialState
+//             });
+//           } else {
+//             const theData = snapshot
+//               .val()
+//               .map(item => item.date === this.props.dateID);
+//             console.log(snapshot.val());
+//             console.log(this.props.dateID);
+//             if (theData) {
+//               this.setState({
+//                 date: this.props.dataID,
+//                 dateIDms: this.props.dateIDms,
+//                 month: this.props.dateID.slice(4, 7),
+//                 day: this.props.dateID.slice(8, 10),
+//                 year: this.props.dateID.slice(11, 15),
+//                 temperature: theData.temperature,
+//                 moods: theData.moods,
+//                 symptoms: theData.symptoms,
+//                 medicine: theData.medicine,
+//                 intercourse: theData.intercourse,
+//                 note: theData.note,
+//                 period: theData.period,
+//                 ovulation: theData.ovulation
+//               });
+//             }
+//           }
+//         });
+//     }
+//   });
+// };

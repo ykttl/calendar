@@ -10,12 +10,15 @@
   position: fixed;
   background: white;
   border: pink solid;
-  width: 50%;
-  height: 600px;
+  width: 40%;
+  /* height: auto; */
+  max-height: calc(100vh - 120px);
+  overflow: auto;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
+  padding: 10px;
 }
 
 .display-block {
@@ -24,4 +27,23 @@
 
 .display-none {
   display: none;
+}
+
+.close-btn {
+  /* display: block;
+  margin: 0 0 0 auto; */
+  float: right;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  /* padding-top: 10px; */
+}
+.cancel {
+  /* font-weight: 900; */
+  color: gray;
+}
+
+.date {
+  text-align: center;
 }

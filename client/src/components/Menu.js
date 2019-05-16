@@ -16,7 +16,12 @@ class Menu extends React.Component {
         this.setState({ user: null });
       });
   };
-
+  componentDidUpdate(prevProps) {
+    // to show menu after redirect from login page
+    if (this.props !== prevProps) {
+      this.setState({ user: true });
+    }
+  }
   renderMenuItem = () => (
     <ul>
       <li>

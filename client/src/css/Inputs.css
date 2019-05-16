@@ -1,22 +1,42 @@
+/* モバイルにすると崩れる */
+
 .inputs-container {
-  /* text-align: left; */
-  width: 70%;
-  border: 3px solid red;
+  width: 50%;
   margin: 0 auto;
 }
 .item-container {
-  border: 3px solid red;
+  border-bottom: 3px solid pink;
   display: flex;
+  margin: 15px;
+  padding: 3px;
 }
 
 .category-box {
   text-align: left;
-  /* border: 10px solid red; */
 }
 .input-box {
-  /* border: 10px solid red; */
-  /* text-align: right; */
-  /* margin: 0 auto; */
   margin: 0px 0px 0px auto;
-  /* border: 10px solid red; */
 }
+span {
+  padding-left: 5px;
+}
+.save-btn {
+  padding: 5px;
+  width: 20%;
+  margin: 10px 0 20px 0;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  color: red;
+  cursor: pointer;
+  background: pink;
+}
+
+.save-btn:active {
+  outline: none;
+  background: palevioletred;
+  color: white;
+}
+
+/* input[type='checkbox'] {
+} */

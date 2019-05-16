@@ -28,7 +28,15 @@ class Calendar extends React.Component {
           .database()
           .ref('data/' + authUser.uid)
           .on('value', snapshot => {
-            this.setState({ dataFromServer: snapshot.val().map(item => item) });
+            if (snapshot.val() === null) {
+              this.setState({
+                dataFromServer: []
+              });
+            } else {
+              this.setState({
+                dataFromServer: snapshot.val().map(item => item)
+              });
+            }
           });
       } else {
         console.log('no data from server, calendar.js');
@@ -179,6 +187,7 @@ class Calendar extends React.Component {
     let temperatureIcon;
     let ovulationIcon;
     let messageToday;
+    let moodsIcon;
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
@@ -234,6 +243,12 @@ class Calendar extends React.Component {
               if (obj.temperature !== '') {
                 temperatureIcon = (
                   <img src="https://img.icons8.com/office/25/000000/thermometer.png" />
+                );
+              }
+              console.log(obj.moods);
+              if (obj.moods !== '') {
+                moodsIcon = (
+                  <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
                 );
               }
             }
@@ -304,6 +319,7 @@ class Calendar extends React.Component {
             {noteIcon}
             {temperatureIcon}
             {ovulationIcon}
+            {moodsIcon}
           </div>
         );
         messageToday = '';
@@ -313,6 +329,7 @@ class Calendar extends React.Component {
         noteIcon = '';
         temperatureIcon = '';
         ovulationIcon = '';
+        moodsIcon = '';
         day = dateFns.addDays(day, 1);
       }
       rows.push(

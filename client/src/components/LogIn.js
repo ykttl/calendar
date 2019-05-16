@@ -2,7 +2,7 @@ import React from 'react';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
 import '../css/Auth.css';
-
+import { Route, Redirect } from 'react-router-dom';
 const INITIAL_STATE = {
   email: '',
   password: '',
@@ -27,6 +27,7 @@ class LogIn extends React.Component {
       })
       .then(() => {
         this.setState({ ...INITIAL_STATE });
+
         this.props.history.push('/calendar');
       })
       .catch(error => {

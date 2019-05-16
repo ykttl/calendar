@@ -5,6 +5,7 @@ import '../css/modal.css';
 
 class Modal extends React.Component {
   render() {
+    console.log(this.props.dateID);
     const showHideClassName = this.props.showModal
       ? 'modal display-block'
       : 'modal display-none';
@@ -12,12 +13,10 @@ class Modal extends React.Component {
     return (
       <div className={showHideClassName}>
         <section className="modal-main">
-          {this.props.children}
-          <button onClick={this.props.handleClose}>
-            {' '}
-            <i class="material-icons">close</i>
+          <button onClick={this.props.handleClose} className="close-btn">
+            <i class="material-icons cancel">cancel</i>
           </button>
-          <p> {this.props.dateID}</p>
+          <h3 className="date"> {this.props.dateID}</h3>
           <Inputs dateID={this.props.dateID} dateIDms={this.props.dateIDms} />
         </section>
       </div>
@@ -26,3 +25,5 @@ class Modal extends React.Component {
 }
 
 export default Modal;
+
+//{this.props.children}

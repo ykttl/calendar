@@ -7,7 +7,8 @@ import loading from '../loading.gif';
 class Log extends React.Component {
   state = {
     dataFromServer: '',
-    periodData: ''
+    periodData: '',
+    user: ''
   };
 
   getDataFromServer = async () => {
@@ -15,18 +16,40 @@ class Log extends React.Component {
 
     const data = await firebase.auth().onAuthStateChanged(authUser => {
       if (authUser) {
+        console.log('inside if');
         firebase
           .database()
           .ref('data/' + authUser.uid)
           .on('value', snapshot => {
-            this.setState(
-              {
-                dataFromServer: snapshot.val().map(item => item)
-              },
-              () => {
-                this.getPeriodData();
-              }
-            );
+            if (snapshot.val() === null) {
+              this.setState(
+                {
+                  dataFromServer: []
+                },
+                () => {
+                  //this.getPeriodData();
+                  this.setState({ user: true });
+                }
+              );
+            } else {
+              this.setState(
+                {
+                  dataFromServer: snapshot.val().map(item => item)
+                },
+                () => {
+                  this.getPeriodData();
+                }
+              );
+            }
+
+            // this.setState(
+            //   {
+            //     dataFromServer: snapshot.val().map(item => item)
+            //   },
+            //   () => {
+            //     this.getPeriodData();
+            //   }
+            // );
           });
       } else {
         console.log('no data from server, calendar.js');
@@ -37,6 +60,8 @@ class Log extends React.Component {
     this.getDataFromServer();
   }
   getPeriodData() {
+    console.log('koko');
+    console.log(this.state);
     const dataFromServer = this.state.dataFromServer;
 
     if (dataFromServer.length === 0) return;
@@ -80,7 +105,7 @@ class Log extends React.Component {
 
   getElapsedDays = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>LOADING</p>;
+    if (data.length === 0) return <p className="elapsed-day-num">No data</p>;
     const firstDayOfPrevPeriod = data[0][0].dateIDms;
 
     let today = new Date();
@@ -104,7 +129,7 @@ class Log extends React.Component {
 
   getDuration = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return;
+    if (data.length === 0) return <p>No data</p>;
 
     return data.map(arr => {
       const firstDay = arr[0].month + ' ' + arr[0].day;
@@ -119,13 +144,13 @@ class Log extends React.Component {
 
   getLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return;
+    if (data.length === 0) return <p>No data</p>;
     return data.map(period => <p>{period.length} days</p>);
   };
 
   getCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return;
+    if (data.length === 0) return <p>No data</p>;
 
     const listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -145,7 +170,7 @@ class Log extends React.Component {
 
   averageCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return;
+    if (data.length === 0) return <p>No data</p>;
 
     let listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -171,7 +196,7 @@ class Log extends React.Component {
 
   averageLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return;
+    if (data.length === 0) return <p>No data</p>;
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
@@ -182,7 +207,7 @@ class Log extends React.Component {
     console.log('render');
     return (
       <div>
-        {this.state.periodData.length === 0 ? (
+        {!this.state.user ? (
           <img src={loading} />
         ) : (
           <div>

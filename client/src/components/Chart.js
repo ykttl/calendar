@@ -17,14 +17,34 @@ class Chart extends React.Component {
           .database()
           .ref('data/' + authUser.uid)
           .on('value', snapshot => {
-            this.setState(
-              {
-                dataFromServer: snapshot.val().map(item => item)
-              },
-              () => {
-                this.getChartData();
-              }
-            );
+            if (snapshot.val() === null) {
+              this.setState(
+                {
+                  dataFromServer: []
+                },
+                () => {
+                  this.getChartData();
+                }
+              );
+            } else {
+              this.setState(
+                {
+                  dataFromServer: snapshot.val().map(item => item)
+                },
+                () => {
+                  this.getChartData();
+                }
+              );
+            }
+
+            // this.setState(
+            //   {
+            //     dataFromServer: snapshot.val().map(item => item)
+            //   },
+            //   () => {
+            //     this.getChartData();
+            //   }
+            // );
           });
       } else {
         console.log('no data from server, calendar.js');
