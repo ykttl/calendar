@@ -122,7 +122,6 @@ class Inputs extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.dateID, 'mounrZ!');
     let now = new Date();
     now = now.toString().slice(0, 15);
     now = dateFns.format(now, 'x');
@@ -137,9 +136,13 @@ class Inputs extends React.Component {
             <div className="item-container">
               <div className="category-box">
                 <img src="https://img.icons8.com/color/25/000000/drop-of-blood.png" />
-                <strike>
-                  <span>Period</span>
-                </strike>
+
+                <span>
+                  <strike>Period</strike>{' '}
+                  <span className="period-disabled">
+                    * present or past only
+                  </span>
+                </span>
               </div>
               <div className="input-box">
                 <input

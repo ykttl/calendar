@@ -41,15 +41,6 @@ class Log extends React.Component {
                 }
               );
             }
-
-            // this.setState(
-            //   {
-            //     dataFromServer: snapshot.val().map(item => item)
-            //   },
-            //   () => {
-            //     this.getPeriodData();
-            //   }
-            // );
           });
       } else {
         console.log('no data from server, calendar.js');
@@ -105,7 +96,7 @@ class Log extends React.Component {
 
   getElapsedDays = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p className="elapsed-day-num">No data</p>;
+    if (data.length === 0) return <p className="elapsed-day-num">0 DAYS</p>;
     const firstDayOfPrevPeriod = data[0][0].dateIDms;
 
     let today = new Date();
@@ -113,6 +104,7 @@ class Log extends React.Component {
     today = dateFns.format(today, 'x');
 
     const latestDayOfPeriod = data[0][data[0].length - 1].dateIDms;
+
     if (latestDayOfPeriod === today) {
       return <p>During period now</p>;
     }
@@ -121,7 +113,6 @@ class Log extends React.Component {
 
     return (
       <div>
-        <p>Since previous period</p>
         <p className="elapsed-day-num">{elapsedDays} DAYS</p>
       </div>
     );
@@ -129,7 +120,7 @@ class Log extends React.Component {
 
   getDuration = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>No data</p>;
+    if (data.length === 0) return <p>---</p>;
 
     return data.map(arr => {
       const firstDay = arr[0].month + ' ' + arr[0].day;
@@ -144,13 +135,13 @@ class Log extends React.Component {
 
   getLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>No data</p>;
+    if (data.length === 0) return <p>0 day</p>;
     return data.map(period => <p>{period.length} days</p>);
   };
 
   getCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>No data</p>;
+    if (data.length === 0) return <p>0 day</p>;
 
     const listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -170,7 +161,7 @@ class Log extends React.Component {
 
   averageCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>No data</p>;
+    if (data.length === 0) return <span>0 day</span>;
 
     let listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -190,13 +181,15 @@ class Log extends React.Component {
     if (listOfCycle.length !== 0) {
       const sum = listOfCycle.reduce((a, b) => a + b);
       const average = Math.round(sum / listOfCycle.length);
-      return <p>Cycle　length: {average} days</p>;
+      return <p>Cycle length: {average} days</p>;
+    } else {
+      return <p>Cycle length: --- days</p>;
     }
   };
 
   averageLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>No data</p>;
+    if (data.length === 0) return <span>0 day</span>;
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
@@ -206,19 +199,20 @@ class Log extends React.Component {
   render() {
     console.log('render');
     return (
-      <div>
-        {!this.state.user ? (
+      <div className="log-container">
+        {this.state.user === '' && !this.state.dataFromServer ? (
           <img src={loading} />
         ) : (
           <div>
             <div className="container-1">
-              <div className="column elapsed-days-box">
+              <div className="elapsed-days-box">
+                <p>Since previous period</p>
                 {this.getElapsedDays()}
               </div>
-              <div className="column average-box">
+              <div className=" average-box">
                 <p>Average</p>
-                <div>{this.averageCycle()} </div>
-                <div>{this.averageLength()}</div>
+                <div>Cycle: {this.averageCycle()} </div>
+                <div>Length: {this.averageLength()}</div>
               </div>
             </div>
 

@@ -38,5 +38,10 @@ span {
   color: white;
 }
 
-/* input[type='checkbox'] {
-} */
+input[type='checkbox'] {
+  transform: scale(1.5);
+}
+.period-disabled {
+  color: red;
+  font-size: 14px;
+}

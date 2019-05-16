@@ -22,6 +22,10 @@ class Menu extends React.Component {
       this.setState({ user: true });
     }
   }
+  componentWillMount() {
+    this.setState({ user: null });
+  }
+
   renderMenuItem = () => (
     <ul>
       <li>

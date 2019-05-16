@@ -5,7 +5,6 @@ import '../css/modal.css';
 
 class Modal extends React.Component {
   render() {
-    console.log(this.props.dateID);
     const showHideClassName = this.props.showModal
       ? 'modal display-block'
       : 'modal display-none';

@@ -257,7 +257,11 @@ class Calendar extends React.Component {
 
         // ======生理予想日にも色をつける=====
 
-        if (this.state.aveCycle !== '' && this.state.aveLength !== '') {
+        if (
+          this.state.aveCycle !== '' &&
+          this.state.aveLength !== '' &&
+          this.state.lastPeridoInfo
+        ) {
           const prevFist = parseInt(this.state.lastPeridoInfo[0].dateIDms);
           const prevLast = parseInt(
             this.state.lastPeridoInfo[this.state.lastPeridoInfo.length - 1]
