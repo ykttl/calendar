@@ -53,7 +53,7 @@
   .modal-main {
     width: 90%;
     height: auto;
-    max-height: calc(200vh - 300px);
+    max-height: calc(100vh - 60px);
   }
 }
 @media (min-width: 601px) and (max-width: 1450px) {

@@ -167,7 +167,7 @@ class Calendar extends React.Component {
   renderCells = () => {
     this.getPeriodData();
 
-    if (this.state.dataFromServer === '') return <img src={loading} />;
+    // if (this.state.dataFromServer === '') return <img src={loading} />;
     //const dataFromServer = JSON.parse(localStorage.getItem('data'));
     const dataFromServer = this.state.dataFromServer;
     const { currentMonth, selectedDate } = this.state;
@@ -209,27 +209,27 @@ class Calendar extends React.Component {
               if (obj.ovulation) {
                 css.push('ovulation');
                 ovulationIcon = (
-                  <img src="https://img.icons8.com/office/25/000000/sunny-side-up-eggs.png" />
+                  <img src="https://img.icons8.com/office/20/000000/sunny-side-up-eggs.png" />
                 );
               }
 
               if (obj.medicine) {
                 css.push('medicine');
                 medicineIcon = (
-                  <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
+                  <img src="https://img.icons8.com/ultraviolet/20/000000/pill.png" />
                 );
               }
 
               if (obj.intercourse) {
                 css.push('intercourse');
                 intercourseIcon = (
-                  <img src="https://img.icons8.com/office/25/000000/hearts.png" />
+                  <img src="https://img.icons8.com/office/20/000000/hearts.png" />
                 );
               }
 
               if (obj.symptoms !== '') {
                 symptomsIcon = (
-                  <img src="https://img.icons8.com/color/25/000000/question.png" />
+                  <img src="https://img.icons8.com/color/20/000000/question.png" />
                 );
               }
 
@@ -237,19 +237,19 @@ class Calendar extends React.Component {
                 // css.push('note');
 
                 noteIcon = (
-                  <img src="https://img.icons8.com/ios/25/000000/note.png" />
+                  <img src="https://img.icons8.com/ios/20/000000/note.png" />
                 );
               }
 
               if (obj.temperature !== '') {
                 temperatureIcon = (
-                  <img src="https://img.icons8.com/office/25/000000/thermometer.png" />
+                  <img src="https://img.icons8.com/office/20/000000/thermometer.png" />
                 );
               }
               console.log(obj.moods);
               if (obj.moods !== '') {
                 moodsIcon = (
-                  <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
+                  <img src="https://img.icons8.com/office/20/000000/rainbow.png" />
                 );
               }
             }
@@ -315,7 +315,7 @@ class Calendar extends React.Component {
             }
           >
             <span className="number">{formattedDate}</span>
-            <span className="bg">{formattedDate}</span>
+
             <span className="today">{messageToday}</span>
             <p />
             {intercourseIcon}
@@ -382,17 +382,23 @@ class Calendar extends React.Component {
   // ============== render ===========================
   render() {
     return (
-      <div className="calendar">
-        <Modal
-          showModal={this.state.showModal}
-          dateID={this.state.dateID}
-          dateIDms={this.state.dateIDms}
-          handleClose={this.hideModal}
-        />
+      <div>
+        {this.state.dataFromServer === '' ? (
+          <img src={loading} />
+        ) : (
+          <div className="calendar">
+            <Modal
+              showModal={this.state.showModal}
+              dateID={this.state.dateID}
+              dateIDms={this.state.dateIDms}
+              handleClose={this.hideModal}
+            />
 
-        {this.renderHeader()}
-        {this.renderDays()}
-        {this.renderCells()}
+            {this.renderHeader()}
+            {this.renderDays()}
+            {this.renderCells()}
+          </div>
+        )}
       </div>
     );
   }

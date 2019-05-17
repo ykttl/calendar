@@ -127,7 +127,7 @@ class Log extends React.Component {
       const lastDay = arr[arr.length - 1].month + ' ' + arr[arr.length - 1].day;
       return (
         <p>
-          {firstDay} 〜 {lastDay}
+          {firstDay} - {lastDay}
         </p>
       );
     });
@@ -181,9 +181,9 @@ class Log extends React.Component {
     if (listOfCycle.length !== 0) {
       const sum = listOfCycle.reduce((a, b) => a + b);
       const average = Math.round(sum / listOfCycle.length);
-      return <p>Cycle length: {average} days</p>;
+      return <span> {average} days</span>;
     } else {
-      return <p>Cycle length: --- days</p>;
+      return <span>--- day</span>;
     }
   };
 
@@ -193,7 +193,7 @@ class Log extends React.Component {
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
-    return <p>Period length: {average} days</p>;
+    return <span>{average} days</span>;
   };
 
   render() {

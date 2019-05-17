@@ -115,6 +115,7 @@ main {
   width: 100%;
   background: var(--neutral-color);
   border: 1px solid var(--border-color);
+  border-radius: 5px;
 }
 
 .calendar .header {
@@ -254,4 +255,9 @@ main {
 /* .opa {
   background: rgba(255, 0, 0, 0.5) !important;
   border: #1a8fff;
+} */
+/* @media only screen and (max-width: 600px) {
+  .calendar {
+    max-width: 1000px !important;
+  }
 } */
