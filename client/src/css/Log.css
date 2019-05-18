@@ -1,6 +1,9 @@
+/* @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700'); */
+
 .log-container {
   width: 80%;
   margin: 0 auto;
+  /* font-family: 'Roboto', sans-serif; */
 }
 
 .container-1 {
@@ -50,7 +53,20 @@
   /* justify-content: flex-start; */
 }
 .column {
-  padding: 0 15px;
+  padding: 0 20px 20px 20px;
+}
+.column-title {
+  margin: 0;
+}
+.title {
+  font-weight: bold;
+  font-size: 18px;
+  color: palevioletred;
+  /* color: blue; */
+}
+.days {
+  color: pink;
+  font-weight: normal;
 }
 
 @media only screen and (max-width: 600px) {

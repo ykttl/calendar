@@ -3,7 +3,7 @@ import dateFns from 'date-fns';
 import '../css/Log.css';
 import firebase from '../firebase';
 import loading from '../loading.gif';
-// 毎回date関数呼ぶんじゃなくてステートに保存するといいんじゃない
+
 class Log extends React.Component {
   state = {
     dataFromServer: '',
@@ -12,8 +12,6 @@ class Log extends React.Component {
   };
 
   getDataFromServer = async () => {
-    // firebase realtime database 変更すると勝手に同期されてるっぽいぞ！？
-
     const data = await firebase.auth().onAuthStateChanged(authUser => {
       if (authUser) {
         console.log('inside if');
@@ -27,7 +25,6 @@ class Log extends React.Component {
                   dataFromServer: []
                 },
                 () => {
-                  //this.getPeriodData();
                   this.setState({ user: true });
                 }
               );
@@ -42,8 +39,6 @@ class Log extends React.Component {
               );
             }
           });
-      } else {
-        console.log('no data from server, calendar.js');
       }
     });
   };
@@ -51,8 +46,6 @@ class Log extends React.Component {
     this.getDataFromServer();
   }
   getPeriodData() {
-    console.log('koko');
-    console.log(this.state);
     const dataFromServer = this.state.dataFromServer;
 
     if (dataFromServer.length === 0) return;
@@ -96,7 +89,8 @@ class Log extends React.Component {
 
   getElapsedDays = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p className="elapsed-day-num">0 DAYS</p>;
+    if (data.length === 0)
+      return <p className="elapsed-day-num days">0 Days</p>;
     const firstDayOfPrevPeriod = data[0][0].dateIDms;
 
     let today = new Date();
@@ -113,7 +107,7 @@ class Log extends React.Component {
 
     return (
       <div>
-        <p className="elapsed-day-num">{elapsedDays} DAYS</p>
+        <p className="elapsed-day-num days">{elapsedDays} Days</p>
       </div>
     );
   };
@@ -126,7 +120,7 @@ class Log extends React.Component {
       const firstDay = arr[0].month + ' ' + arr[0].day;
       const lastDay = arr[arr.length - 1].month + ' ' + arr[arr.length - 1].day;
       return (
-        <p>
+        <p className="days">
           {firstDay} - {lastDay}
         </p>
       );
@@ -135,13 +129,13 @@ class Log extends React.Component {
 
   getLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>0 day</p>;
-    return data.map(period => <p>{period.length} days</p>);
+    if (data.length === 0) return <p className="days">0 Day</p>;
+    return data.map(period => <p className="days">{period.length} Days</p>);
   };
 
   getCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <p>0 day</p>;
+    if (data.length === 0) return <p className="days">0 Day</p>;
 
     const listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -156,12 +150,12 @@ class Log extends React.Component {
       }
     });
 
-    return listOfCycle.map(cycle => <p>{cycle} days</p>);
+    return listOfCycle.map(cycle => <p className="days">{cycle} Days</p>);
   };
 
   averageCycle = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <span>0 day</span>;
+    if (data.length === 0) return <span className="days">0 Day</span>;
 
     let listOfCycle = data.map((period, index) => {
       let prevPeriod = data[index + 1];
@@ -181,23 +175,22 @@ class Log extends React.Component {
     if (listOfCycle.length !== 0) {
       const sum = listOfCycle.reduce((a, b) => a + b);
       const average = Math.round(sum / listOfCycle.length);
-      return <span> {average} days</span>;
+      return <span className="days"> {average} Days</span>;
     } else {
-      return <span>--- day</span>;
+      return <span className="days">--- Day</span>;
     }
   };
 
   averageLength = () => {
     const data = this.state.periodData;
-    if (data.length === 0) return <span>0 day</span>;
+    if (data.length === 0) return <span>0 Day</span>;
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
-    return <span>{average} days</span>;
+    return <span className="days">{average} Days</span>;
   };
 
   render() {
-    console.log('render');
     return (
       <div className="log-container">
         {this.state.user === '' && !this.state.dataFromServer ? (
@@ -206,28 +199,28 @@ class Log extends React.Component {
           <div>
             <div className="container-1">
               <div className="elapsed-days-box">
-                <p>Since previous period</p>
+                <p className="title">Since previous period</p>
                 {this.getElapsedDays()}
               </div>
-              <div className=" average-box">
-                <p>Average</p>
-                <div>Cycle: {this.averageCycle()} </div>
-                <div>Length: {this.averageLength()}</div>
+              <div className="average-box">
+                <p className="title">Average</p>
+                <div>Cycle Length {this.averageCycle()} </div>
+                <div>Period Length {this.averageLength()}</div>
               </div>
             </div>
 
             <div className="container-2">
-              <p>History</p>
+              <p className="title">History</p>
 
               <div className="column-box">
                 <div className="column">
-                  <p>Duration</p> {this.getDuration()}
+                  <p className="column-title">Duration</p> {this.getDuration()}
                 </div>
                 <div className="column">
-                  <p>Length</p> {this.getLength()}
+                  <p className="column-title">Length</p> {this.getLength()}
                 </div>
                 <div className="column">
-                  <p>Cycle</p> {this.getCycle()}
+                  <p className="column-title">Cycle</p> {this.getCycle()}
                 </div>
               </div>
             </div>

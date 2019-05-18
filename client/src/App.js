@@ -18,7 +18,6 @@ const App = () => (
         <Route key={2} exact path="/log" component={Log} />
         <Route key={3} exact path="/chart" component={Chart} />
       </div>
-      <a href="https://icons8.com/icon/52810/pill">Pill icon by Icons8</a>
     </BrowserRouter>
   </div>
 );

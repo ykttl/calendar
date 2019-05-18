@@ -219,8 +219,7 @@ main {
 .pills {
   background: paleturquoise;
 }
-.intercourse {
-}
+
 .period-start {
   /* background: red; */
   background: rgba(255, 0, 0, 0.5) !important;
@@ -233,16 +232,13 @@ main {
 .period-estimation {
   background: rgba(255, 0, 0, 0.1);
 }
-.gaga {
-  /* background: pink; */
-  background: rgba(255, 0, 0, 0.1);
-}
+
 .today {
   color: skyblue;
   font-weight: bold;
 }
 .ovulation {
-  background: yellow !important;
+  background: rgb(255, 255, 0, 0.7) !important;
 }
 .ovulation-estimation {
   background: rgba(255, 255, 0, 0.1);

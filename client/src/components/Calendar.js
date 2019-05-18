@@ -6,6 +6,8 @@ import dateFns from 'date-fns';
 import Modal from './Modal';
 import firebase from '../firebase';
 import loading from '../loading.gif';
+import CalendarLegend from './CalendarLegend';
+import IconSource from './IconSource';
 
 class Calendar extends React.Component {
   state = {
@@ -15,11 +17,12 @@ class Calendar extends React.Component {
     dateID: '',
     dateIDms: '',
     averageCycle: '',
-    aveLength: '',
+    averageLength: '',
     lastPeridoInfo: '',
     dataFromServer: '',
     listOfPeriods: ''
   };
+
   getDataFromServer = async () => {
     // firebase realtime database 変更すると勝手に同期されてるっぽいぞ！？
 
@@ -39,12 +42,12 @@ class Calendar extends React.Component {
               });
             }
           });
-      } else {
-        console.log('no data from server, calendar.js');
       }
     });
   };
-
+  componentDidUpdate() {
+    console.log(this.state);
+  }
   componentWillMount() {
     this.getDataFromServer();
   }
@@ -161,7 +164,7 @@ class Calendar extends React.Component {
     const listOfLength = data.map(period => period.length);
     const sum = listOfLength.reduce((a, b) => a + b);
     const average = Math.round(sum / listOfLength.length);
-    this.state.aveLength = average;
+    this.state.averageLength = average;
   };
 
   renderCells = () => {
@@ -259,8 +262,8 @@ class Calendar extends React.Component {
         // ======生理予想日にも色をつける=====
 
         if (
-          this.state.aveCycle !== '' &&
-          this.state.aveLength !== '' &&
+          this.state.averageCycle !== '' &&
+          this.state.averageLength !== '' &&
           this.state.lastPeridoInfo
         ) {
           const prevFist = parseInt(this.state.lastPeridoInfo[0].dateIDms);
@@ -275,8 +278,8 @@ class Calendar extends React.Component {
               css.push('period-estimation');
             }
             if (
-              (gap % (this.state.averageCycle * 86400000)) / 86400000 <=
-              this.state.aveLength
+              (gap % (this.state.averageCycle * 86400000)) / 86400000 <
+              this.state.averageLength
             ) {
               css.push('period-estimation');
             }
@@ -386,17 +389,23 @@ class Calendar extends React.Component {
         {this.state.dataFromServer === '' ? (
           <img src={loading} />
         ) : (
-          <div className="calendar">
-            <Modal
-              showModal={this.state.showModal}
-              dateID={this.state.dateID}
-              dateIDms={this.state.dateIDms}
-              handleClose={this.hideModal}
-            />
+          <div>
+            <div className="calendar">
+              <Modal
+                showModal={this.state.showModal}
+                dateID={this.state.dateID}
+                dateIDms={this.state.dateIDms}
+                handleClose={this.hideModal}
+              />
 
-            {this.renderHeader()}
-            {this.renderDays()}
-            {this.renderCells()}
+              {this.renderHeader()}
+              {this.renderDays()}
+              {this.renderCells()}
+            </div>
+            <div style={{ display: 'flex' }}>
+              <CalendarLegend />
+              <IconSource />
+            </div>
           </div>
         )}
       </div>
