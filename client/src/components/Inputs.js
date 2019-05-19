@@ -195,10 +195,12 @@ class Inputs extends React.Component {
                 onChange={e => {
                   this.setState({ temperature: e.target.value });
                 }}
+                placeholder="36.0"
                 value={this.state.temperature}
               />
             </div>
           </div>
+
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/color/25/000000/question.png" />
@@ -220,6 +222,33 @@ class Inputs extends React.Component {
               </select>
             </div>
           </div>
+
+          <div className="item-container">
+            <div className="category-box">
+              <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
+              <span>Moods</span>
+            </div>
+            <div className="input-box">
+              <select
+                onChange={e => {
+                  this.setState({ moods: e.target.value });
+                }}
+                value={this.state.moods}
+              >
+                <option value="">-</option>
+                <option value="Happy">Happy</option>
+                <option value="Relaxed">Relaxed</option>
+                <option value="Motivated">Motivated</option>
+                <option value="Normal">Normal</option>
+                <option value="Depressed">Depressed</option>
+                <option value="Anxious">Anxious</option>
+                <option value="Sad">Sad</option>
+                <option value="Irritated">Irritated</option>
+                <option value="Slow">Slow</option>
+              </select>
+            </div>
+          </div>
+
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/ultraviolet/25/000000/pill.png" />
@@ -250,31 +279,7 @@ class Inputs extends React.Component {
               />
             </div>
           </div>
-          <div className="item-container">
-            <div className="category-box">
-              <img src="https://img.icons8.com/office/25/000000/rainbow.png" />
-              <span>Moods</span>
-            </div>
-            <div className="input-box">
-              <select
-                onChange={e => {
-                  this.setState({ moods: e.target.value });
-                }}
-                value={this.state.moods}
-              >
-                <option value="">-</option>
-                <option value="Happy">Happy</option>
-                <option value="Relaxed">Relaxed</option>
-                <option value="Motivated">Motivated</option>
-                <option value="Normal">Normal</option>
-                <option value="Depressed">Depressed</option>
-                <option value="Anxious">Anxious</option>
-                <option value="Sad">Sad</option>
-                <option value="Irritated">Irritated</option>
-                <option value="Slow">Slow</option>
-              </select>
-            </div>
-          </div>
+
           <div className="item-container">
             <div className="category-box">
               <img src="https://img.icons8.com/ios/25/000000/note.png" />

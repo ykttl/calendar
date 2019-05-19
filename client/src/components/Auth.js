@@ -2,21 +2,18 @@ import React from 'react';
 import SignUp from './SignUp';
 import LogIn from './LogIn';
 import '../css/Auth.css';
-
-//ここにステートつくって認証データ保存してわたす？コンテクスト？
-
-// export const authContext = React.createContext(null);
+import { withRouter } from 'react-router-dom';
+import firebase from '../firebase';
 
 class Auth extends React.Component {
-  state = {
-    auth: ''
-  };
-  componentDidUpdate() {
-    console.log(this.state);
+  async componentDidMount() {
+    const data = firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.props.history.push('/calendar');
+      }
+    });
   }
-  updateAuth = auth => {
-    this.setState({ auth });
-  };
+
   render() {
     return (
       <div className="auth-container">
@@ -27,5 +24,4 @@ class Auth extends React.Component {
   }
 }
 
-export default Auth;
-// export default authContext;
+export default withRouter(Auth);
