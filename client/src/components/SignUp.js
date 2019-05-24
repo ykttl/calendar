@@ -22,9 +22,8 @@ class SignUp extends React.Component {
       .auth()
       .createUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
-        console.log(authUser);
         this.props.updateAuth(authUser);
-        // Create a user in your Firebase realtime database
+
         firebase
           .database()
           .ref('users/' + authUser.user.uid)

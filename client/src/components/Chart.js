@@ -90,7 +90,6 @@ class Chart extends React.Component {
       for (let i = 0; i < periodArr.length; i++) {
         if (data.label === periodArr[i].date.slice(4, 10)) {
           chartData[index]['period'] = 38;
-          // console.log(chartData[index]['period']);
           chartData[index]['color'] = 'rgba(255, 99, 132, 0.2)';
         }
       }

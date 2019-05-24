@@ -13,19 +13,13 @@ const App = () => (
     <BrowserRouter>
       <Menu />
       <div className="routes-container">
-        <Route key={0} exact path="/" component={Auth} />
-        <Route key={1} exact path="/calendar" component={Calendar} />
-        <Route key={2} exact path="/log" component={Log} />
-        <Route key={3} exact path="/chart" component={Chart} />
+        <Route key={Auth} exact path="/" component={Auth} />
+        <Route key={Calendar} exact path="/calendar" component={Calendar} />
+        <Route key={Log} exact path="/log" component={Log} />
+        <Route key={Chart} exact path="/chart" component={Chart} />
       </div>
     </BrowserRouter>
   </div>
 );
 
 export default App;
-
-// <Route key={4} exact path="/signup" component={SignUp} />
-// <Route key={5} exact path="/signin" component={SignIn} />
-// <Route key={6} exact path="/signout" component={SignOut} />
-// <Route key={7} exact path="/account" component={Account} />
-// <Route key={8} exact path="/forgotPW" component={ForgotPW} />

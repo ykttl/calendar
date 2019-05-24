@@ -5,13 +5,11 @@
   margin: 0 auto;
   text-align: center;
   font-family: 'Roboto', sans-serif;
-  /* max-width: 1500px; */
 }
 
 .routes-container {
   max-width: 1000px;
   margin: 0 auto;
-  /* margin-top: calc(100vh / 100px); */
 }
 
 @media only screen and (max-width: 600px) {

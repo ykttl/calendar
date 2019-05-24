@@ -1,9 +1,5 @@
-/* @import url('https://fonts.googleapis.com/css?family=Roboto:400,700'); */
-
 .menu {
   padding: 20px 0 30px 0;
-  /* display: flex; */
-  /* font-family: 'Roboto', sans-serif; */
   margin: 0 auto;
   width: 100%;
 }
@@ -37,28 +33,13 @@ a:active {
   color: palevioletred;
   text-decoration: none;
 }
-/* .signout {
-  position: absolute;
-  top: 5%;
-  right: 5%;
-  font-size: 20px;
-} */
 
 @media only screen and (max-width: 600px) {
   .menu {
     padding: 20px 0 0 0;
-    /* display: flex; */
     font-family: 'Roboto', sans-serif;
     margin: 0 auto;
     width: 100%;
     margin-bottom: 15px;
   }
-
-  /* ul {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-    margin: 5px;
-    padding: 0;
-  } */
 }

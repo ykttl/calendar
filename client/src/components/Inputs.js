@@ -114,7 +114,7 @@ class Inputs extends React.Component {
               .ref('data/' + authUser.uid)
               .set(this.data);
           } else {
-            console.log('noooo user2');
+            console.log('no user data');
           }
         });
       }
@@ -195,7 +195,6 @@ class Inputs extends React.Component {
                 onChange={e => {
                   this.setState({ temperature: e.target.value });
                 }}
-                placeholder="36.0"
                 value={this.state.temperature}
               />
             </div>
@@ -303,97 +302,4 @@ class Inputs extends React.Component {
   }
 }
 
-// const Inputs = withFirebase(InputsBase);
-
 export default Inputs;
-
-// <input
-// type="text"
-// onChange={e => {
-//   this.setState({ symptoms: e.target.value });
-// }}
-// value={this.state.symptoms}
-// />
-
-// <p>symptoms:{this.state.symptoms}</p>
-// <p>note:{this.state.note}</p>
-// <p>moods:{this.state.moods}</p>
-// <p>temperature:{this.state.temperature}</p>
-
-// const data = await firebase.auth().onAuthStateChanged(authUser => {
-//   if (authUser) {
-//     firebase
-//       .database()
-//       .ref('data/' + authUser.uid)
-//       .on('value', snapshot => {
-//         if (snapshot.val() === null) {
-//           return [];
-//         } else {
-//           this.data = [...snapshot.val()];
-//           const theData = snapshot
-//             .val()
-//             .map(item => item.date === this.props.dateID);
-//           console.log(snapshot.val());
-//           console.log(this.props.dateID);
-//           console.log(theData);
-//           if (theData) {
-//             this.setState({
-//               date: this.props.dataID,
-//               dateIDms: this.props.dateIDms,
-//               month: this.props.dateID.slice(4, 7),
-//               day: this.props.dateID.slice(8, 10),
-//               year: this.props.dateID.slice(11, 15),
-//               temperature: theData.temperature,
-//               moods: theData.moods,
-//               symptoms: theData.symptoms,
-//               medicine: theData.medicine,
-//               intercourse: theData.intercourse,
-//               note: theData.note,
-//               period: theData.period,
-//               ovulation: theData.ovulation
-//             });
-//           }
-//         }
-//       });
-//   }
-// });
-
-// getDataFromServer = async () => {
-//   const data = await firebase.auth().onAuthStateChanged(authUser => {
-//     if (authUser) {
-//       firebase
-//         .database()
-//         .ref('data/' + authUser.uid)
-//         .on('value', snapshot => {
-//           if (snapshot.val() === null) {
-//             this.setState({
-//               ...initialState
-//             });
-//           } else {
-//             const theData = snapshot
-//               .val()
-//               .map(item => item.date === this.props.dateID);
-//             console.log(snapshot.val());
-//             console.log(this.props.dateID);
-//             if (theData) {
-//               this.setState({
-//                 date: this.props.dataID,
-//                 dateIDms: this.props.dateIDms,
-//                 month: this.props.dateID.slice(4, 7),
-//                 day: this.props.dateID.slice(8, 10),
-//                 year: this.props.dateID.slice(11, 15),
-//                 temperature: theData.temperature,
-//                 moods: theData.moods,
-//                 symptoms: theData.symptoms,
-//                 medicine: theData.medicine,
-//                 intercourse: theData.intercourse,
-//                 note: theData.note,
-//                 period: theData.period,
-//                 ovulation: theData.ovulation
-//               });
-//             }
-//           }
-//         });
-//     }
-//   });
-// };

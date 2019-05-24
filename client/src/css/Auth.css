@@ -1,7 +1,6 @@
 .auth-container {
   display: flex;
   justify-content: center;
-  /* max-width: 1200px; */
 }
 .signup-container {
   width: 50%;
@@ -69,6 +68,14 @@
 }
 .error-message {
   color: red;
+}
+.sample-msg {
+  color: skyblue;
+  margin-bottom: 20px;
+}
+
+.sample-p {
+  margin: 5px;
 }
 
 @media only screen and (max-width: 600px) {

@@ -11,7 +11,7 @@
   background: white;
   border: pink solid;
   width: 40%;
-  /* height: auto; */
+
   max-height: calc(100vh - 120px);
   overflow: auto;
   top: 50%;
@@ -30,17 +30,13 @@
 }
 
 .close-btn {
-  /* display: block;
-  margin: 0 0 0 auto; */
   float: right;
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
-  /* padding-top: 10px; */
 }
 .cancel {
-  /* font-weight: 900; */
   color: gray;
 }
 
@@ -48,7 +44,6 @@
   text-align: center;
 }
 
-/* 小さいパソコンようも作るといい */
 @media only screen and (max-width: 600px) {
   .modal-main {
     width: 90%;

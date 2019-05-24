@@ -22,7 +22,6 @@ class LogIn extends React.Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(authUser => {
-        console.log(authUser);
         this.props.updateAuth(authUser);
       })
       .then(() => {
@@ -47,6 +46,13 @@ class LogIn extends React.Component {
     return (
       <form onSubmit={this.onSubmit} className="login-container">
         <h2>Log in</h2>
+
+        <div className="sample-msg">
+          <p className="sample-p">* For sample data *</p>
+          <p className="sample-p">Email: shw67wdg5n6c@sute.jp</p>
+          <p className="sample-p">Password: sample</p>
+        </div>
+
         <div className="inputs-box">
           <input
             name="email"

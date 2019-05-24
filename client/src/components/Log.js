@@ -14,7 +14,6 @@ class Log extends React.Component {
   getDataFromServer = async () => {
     const data = await firebase.auth().onAuthStateChanged(authUser => {
       if (authUser) {
-        console.log('inside if');
         firebase
           .database()
           .ref('data/' + authUser.uid)

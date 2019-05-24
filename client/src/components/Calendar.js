@@ -1,4 +1,4 @@
-// this calendar is made by referring to https://github.com/moodydev/react-calendar
+// original design of this calendar is from https://github.com/moodydev/react-calendar
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 
 import React from 'react';
@@ -24,8 +24,6 @@ class Calendar extends React.Component {
   };
 
   getDataFromServer = async () => {
-    // firebase realtime database 変更すると勝手に同期されてるっぽいぞ！？
-
     const data = await firebase.auth().onAuthStateChanged(authUser => {
       if (authUser) {
         firebase
@@ -45,9 +43,6 @@ class Calendar extends React.Component {
       }
     });
   };
-  componentDidUpdate() {
-    console.log(this.state);
-  }
   componentWillMount() {
     this.getDataFromServer();
   }
@@ -87,8 +82,6 @@ class Calendar extends React.Component {
   };
 
   getPeriodData() {
-    console.log('get period');
-    // const dataFromServer = JSON.parse(localStorage.getItem('data'));
     const dataFromServer = this.state.dataFromServer;
     if (dataFromServer.length === 0) return;
 
@@ -123,14 +116,12 @@ class Calendar extends React.Component {
         daysOfPeriod = [];
       }
     });
-    console.log(listOfPeriods);
 
     const lastPeridoInfo = listOfPeriods[listOfPeriods.length - 1];
     this.state.lastPeridoInfo = lastPeridoInfo;
     this.state.listOfPeriods = listOfPeriods.reverse();
     this.averageCycle();
     this.averageLength();
-    // return listOfPeriods.reverse();
   }
   averageCycle = () => {
     const data = this.state.listOfPeriods;
@@ -169,9 +160,6 @@ class Calendar extends React.Component {
 
   renderCells = () => {
     this.getPeriodData();
-
-    // if (this.state.dataFromServer === '') return <img src={loading} />;
-    //const dataFromServer = JSON.parse(localStorage.getItem('data'));
     const dataFromServer = this.state.dataFromServer;
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
@@ -237,8 +225,6 @@ class Calendar extends React.Component {
               }
 
               if (obj.note !== '') {
-                // css.push('note');
-
                 noteIcon = (
                   <img src="https://img.icons8.com/ios/20/000000/note.png" />
                 );
@@ -249,7 +235,7 @@ class Calendar extends React.Component {
                   <img src="https://img.icons8.com/office/20/000000/thermometer.png" />
                 );
               }
-              console.log(obj.moods);
+
               if (obj.moods !== '') {
                 moodsIcon = (
                   <img src="https://img.icons8.com/office/20/000000/rainbow.png" />
@@ -258,8 +244,6 @@ class Calendar extends React.Component {
             }
           });
         }
-
-        // ======生理予想日にも色をつける=====
 
         if (
           this.state.averageCycle !== '' &&
@@ -285,8 +269,6 @@ class Calendar extends React.Component {
             }
           }
         }
-
-        // ===========
 
         if (!dateFns.isSameMonth(day, monthStart)) {
           css.push('disabled');
