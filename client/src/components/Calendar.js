@@ -1,4 +1,4 @@
-// original design of this calendar is from https://github.com/moodydev/react-calendar
+// original design of this calendar is
 // https://blog.flowandform.agency/create-a-custom-calendar-in-react-3df1bfd0b728
 
 import React from 'react';

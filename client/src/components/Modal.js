@@ -24,5 +24,3 @@ class Modal extends React.Component {
 }
 
 export default Modal;
-
-//{this.props.children}
